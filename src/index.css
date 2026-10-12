@@ -1,0 +1,221 @@
+@import "tailwindcss";
+@import "@fontsource-variable/archivo/wdth.css";
+
+/* ==========================================================================
+   Asiatic Engineering Co. design tokens
+   Direction: "Bold Contemporary Industrial". Navy ground, three signal
+   colours, one diagonal. Everything on the page is built from this file.
+   ========================================================================== */
+
+@theme {
+  /* --- Colour ------------------------------------------------------------
+     Rule: the three brights (coral, signal, teal) always carry ink text.
+     Ink surfaces carry paper text. Nothing else is allowed, so every
+     pairing clears WCAG AA. */
+  --color-ink: #0c2135;
+  --color-ink-raised: #14304a;
+  --color-ink-line: #26455f;
+  --color-ink-muted: #9db0c2;
+
+  --color-coral: #f0564a;
+  --color-signal: #ffc42e;
+  --color-teal: #17b3b9;
+
+  --color-paper: #f3f5f7;
+  --color-surface: #ffffff;
+  --color-line: #d3dae1;
+  --color-steel: #52636f;
+
+  /* shadcn / 21st.dev semantic names, mapped onto the palette above so
+     registry components inherit the brand without edits. */
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+  --color-primary: var(--color-signal);
+  --color-primary-foreground: var(--color-ink);
+  --color-secondary: var(--color-ink);
+  --color-secondary-foreground: var(--color-surface);
+  --color-muted: var(--color-paper);
+  --color-muted-foreground: var(--color-steel);
+  --color-accent: var(--color-teal);
+  --color-accent-foreground: var(--color-ink);
+  --color-destructive: var(--color-coral);
+  --color-border: var(--color-line);
+  --color-input: var(--color-line);
+  --color-ring: var(--color-teal);
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-ink);
+  --color-popover: var(--color-surface);
+  --color-popover-foreground: var(--color-ink);
+
+  /* --- Type --------------------------------------------------------------
+     One family, Archivo, used at three widths: expanded for display,
+     normal for reading, narrow for labels. Sizes follow a 1.25 (major
+     third) scale from a 16px base. */
+  --font-sans: "Archivo Variable", "Helvetica Neue", Arial, sans-serif;
+
+  --text-label: 0.8125rem;
+  --text-small: 0.875rem;
+  --text-body: 1rem;
+  --text-lead: 1.125rem;
+  --text-subhead: 1.25rem;
+  --text-heading: 1.5625rem;
+  --text-title: clamp(1.953rem, 1.35rem + 2.6vw, 3.052rem);
+  --text-display: clamp(2.441rem, 1.2rem + 4.4vw, 4.25rem);
+
+  /* --- Space -------------------------------------------------------------
+     Component spacing sits on Tailwind's 4px grid (p-4, gap-6 ...).
+     Layout spacing uses the four fluid tokens below and nothing else. */
+  --spacing-gutter: clamp(1.25rem, 5vw, 4rem);
+  --spacing-section: clamp(4.5rem, 9vw, 8rem);
+  --spacing-block: clamp(2rem, 4vw, 3.5rem);
+  --spacing-header: 4.75rem;
+  --container-page: 82rem;
+
+  /* --- Shape -------------------------------------------------------------
+     Square corners throughout. The only non-rectangular shape is the cut. */
+  --radius-none: 0;
+}
+
+:root {
+  /* The one diagonal. Every angled edge on the site uses this value. */
+  --cut-angle: -16deg;
+  --cut-angle-inverse: 16deg;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--spacing-header);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.6;
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-teal);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--color-signal);
+    color: var(--color-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+/* --- Type roles ----------------------------------------------------------
+   Use these instead of raw text-* sizes so weight, width, leading and
+   tracking always travel together. */
+
+@utility type-display {
+  font-size: var(--text-display);
+  font-weight: 800;
+  font-stretch: 112%;
+  line-height: 0.96;
+  letter-spacing: -0.028em;
+  text-wrap: balance;
+}
+
+@utility type-title {
+  font-size: var(--text-title);
+  font-weight: 750;
+  font-stretch: 108%;
+  line-height: 1.04;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+}
+
+@utility type-heading {
+  font-size: var(--text-heading);
+  font-weight: 700;
+  font-stretch: 104%;
+  line-height: 1.15;
+  letter-spacing: -0.012em;
+}
+
+@utility type-subhead {
+  font-size: var(--text-subhead);
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: -0.006em;
+}
+
+@utility type-lead {
+  font-size: var(--text-lead);
+  font-weight: 400;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+@utility type-body {
+  font-size: var(--text-body);
+  font-weight: 400;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+@utility type-small {
+  font-size: var(--text-small);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+@utility type-label {
+  font-size: var(--text-label);
+  font-weight: 600;
+  font-stretch: 88%;
+  line-height: 1.25;
+  letter-spacing: 0.012em;
+}
+
+/* --- Layout patterns ----------------------------------------------------- */
+
+@utility page {
+  width: min(100% - 2 * var(--spacing-gutter), var(--container-page));
+  margin-inline: auto;
+}
+
+@utility section-y {
+  padding-block: var(--spacing-section);
+}
+
+/* Measure: keeps running text under ~70 characters. */
+@utility measure {
+  max-width: 34rem;
+}
+
+/* --- The cut ------------------------------------------------------------- */
+
+@utility cut {
+  transform: skewX(var(--cut-angle));
+}
+
+@utility cut-inverse {
+  transform: skewX(var(--cut-angle-inverse));
+}
+
+/* Text link with a rule that thickens on hover. Works on any surface. */
+@utility link-rule {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+  transition: text-decoration-thickness 150ms ease;
+
+  &:hover {
+    text-decoration-thickness: 3px;
+  }
+}
