@@ -14,8 +14,8 @@ CDN cache), with no rebuild or redeploy.
 | Response types | [`src/lib/content/types.ts`](../src/lib/content/types.ts) |
 | Starter content | [`src/data/catalogue.ts`](../src/data/catalogue.ts) → [`sanity/seed.ndjson`](../sanity/seed.ndjson) |
 
-Until `projectId` is set, the site renders the starter content in `src/data/catalogue.ts`, so it
-works before Sanity is connected.
+The project is **`h3gmyh3a`**, dataset **`production`** (public). Without a `projectId`, the site
+falls back to the starter content in `src/data/catalogue.ts`.
 
 ---
 
@@ -53,7 +53,8 @@ works before Sanity is connected.
    ```
 
    This creates the four categories, ten dealer brands plus the in-house brand, and eight sample
-   products. Sample products are flagged **Sample listing**; turn the flag off once details are final.
+   products. Document IDs use dashes (`product-abrasives`): Sanity hides any document whose ID
+   contains a dot from public reads, so never create IDs with dots. Sample products are flagged **Sample listing**; turn the flag off once details are final.
    `--missing` skips documents that already exist, so re-running it never overwrites edits.
 5. **Invite editors** in sanity.io/manage → Members. They sign in at `/AEC/studio/` with Google,
    GitHub or email.

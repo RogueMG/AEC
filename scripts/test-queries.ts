@@ -17,6 +17,10 @@ const dataset = readFileSync(join(root, "sanity", "seed.ndjson"), "utf8")
   .split("\n")
   .map((line) => JSON.parse(line));
 
+for (const doc of dataset) {
+  assert.ok(!doc._id.includes("."), `${doc._id}: a dot in an ID hides the document from public reads`);
+}
+
 async function run(name: keyof typeof queries, params: Record<string, string> = {}) {
   const tree = parse(queries[name], { params });
   const value = await (await evaluate(tree, { dataset, params })).get();

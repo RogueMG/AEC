@@ -7,6 +7,8 @@ import { fileURLToPath } from "node:url";
 import { seedBrands, seedCategories, seedProducts, type SeedImage } from "../src/data/catalogue.ts";
 
 const SITE = "https://roguemg.github.io/AEC/";
+// Sanity hides documents whose ID contains a dot from public reads, so IDs use dashes.
+const id = (type: string, slug: string) => `${type}-${slug}`;
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 const slug = (current: string) => ({ _type: "slug", current });
@@ -20,7 +22,7 @@ const image = (img: SeedImage, key?: string) => ({
 
 const docs: object[] = [
   ...seedCategories.map((c) => ({
-    _id: `category.${c.slug}`,
+    _id: id("category", c.slug),
     _type: "category",
     title: c.title,
     slug: slug(c.slug),
@@ -32,7 +34,7 @@ const docs: object[] = [
     order: c.order,
   })),
   ...seedBrands.map((b) => ({
-    _id: `brand.${b.slug}`,
+    _id: id("brand", b.slug),
     _type: "brand",
     name: b.name,
     slug: slug(b.slug),
@@ -40,12 +42,12 @@ const docs: object[] = [
     order: b.order,
   })),
   ...seedProducts.map((p) => ({
-    _id: `product.${p.slug}`,
+    _id: id("product", p.slug),
     _type: "product",
     title: p.title,
     slug: slug(p.slug),
-    category: ref(`category.${p.category}`),
-    ...(p.brand ? { brand: ref(`brand.${p.brand}`) } : {}),
+    category: ref(id("category", p.category)),
+    ...(p.brand ? { brand: ref(id("brand", p.brand)) } : {}),
     summary: p.summary,
     images: p.images.map((img, i) => image(img, `img${i}`)),
     keyFeatures: p.keyFeatures,
