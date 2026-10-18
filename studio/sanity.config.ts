@@ -10,7 +10,8 @@ export default defineConfig({
   title: "Asiatic Engineering Co.",
   projectId: project.projectId,
   dataset: project.dataset,
-  basePath: "/AEC/studio",
+  // No basePath here: the build mounts the Studio at project.basePath in sanity.cli.ts,
+  // and a workspace basePath would be appended to it (/AEC/studio/AEC/studio).
   plugins: [
     structureTool({ structure }),
     // Vision lets the developer try GROQ queries against live content.
