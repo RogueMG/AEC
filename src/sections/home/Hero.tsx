@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import GearDrawing from "@/components/brand/GearDrawing";
 import { Button } from "@/components/ui/button";
 import { duration, ease } from "@/lib/motion";
 import { publicAsset } from "@/lib/publicAsset";
@@ -44,11 +45,18 @@ function Bands({ className }: { className?: string }) {
 
 function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden bg-ink text-surface">
+    <section id="top" className="relative overflow-hidden bg-surface text-ink">
       {/* Small screens: the bands sit above the copy as a strip. */}
       <div className="h-52 overflow-hidden pt-(--spacing-header) sm:h-64 lg:hidden">
         <Bands className="-mr-[30%] ml-[12%] h-full" />
       </div>
+
+      {/* A faint line drawing of the gear, centred just off the bottom-left corner so only its
+          teeth rise behind the copy and the centre lines stay clear of the text. */}
+      <GearDrawing
+        delay={COPY_DELAY}
+        className="pointer-events-none absolute -bottom-[16rem] -left-[17.5rem] w-[34rem] text-line lg:-bottom-[25.5rem] lg:-left-[30.5rem] lg:w-[56rem]"
+      />
 
       {/* Large screens: the bands fill the right half, full height. */}
       <Bands className="absolute inset-y-0 -right-[22%] left-[55%] hidden lg:flex" />
@@ -69,23 +77,23 @@ function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: duration.base, ease: ease.out, delay: COPY_DELAY + 0.25 }}
           >
-            <p className="type-lead measure mt-6 text-ink-muted">
+            <p className="type-lead measure mt-6 text-steel">
               We knit industrial gloves and make PPE at our own factory in Sriperumbudur, and supply
               tools, consumables and MRO products to manufacturers across South India. Since 1999.
             </p>
 
             <div className="mt-9 flex flex-wrap gap-3">
-              <Button asChild>
+              <Button asChild variant="ink">
                 <a href="#products">View products</a>
               </Button>
-              <Button asChild variant="outline-on-ink">
+              <Button asChild variant="outline-on-light">
                 <a href="#contact">Enquire now</a>
               </Button>
             </div>
 
-            <p className="type-small mt-9 text-ink-muted">
+            <p className="type-small mt-9 text-steel">
               Authorized dealer for Stanley, Bosch, Karam and{" "}
-              <a href="#brands" className="link-rule text-surface">
+              <a href="#brands" className="link-rule text-ink">
                 seven more brands
               </a>
               .
