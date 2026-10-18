@@ -45,15 +45,15 @@ export const locations: Location[] = [
   },
 ];
 
-export type NavItem = { label: string; href: string };
+// `to` is a router path. `section` is the home-page section that marks the item active while scrolling.
+export type NavItem = { label: string; to: string; section: string };
 
-// Only Home is built so far; the rest point at the matching home-page section.
 export const navItems: NavItem[] = [
-  { label: "Home", href: "#top" },
-  { label: "Products", href: "#products" },
-  { label: "About", href: "#about" },
-  { label: "Industries", href: "#industries" },
-  { label: "Brands", href: "#brands" },
-  { label: "Catalogue", href: "#catalogue" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", to: "/", section: "top" },
+  { label: "Products", to: "/products", section: "products" },
+  { label: "About", to: "/#about", section: "about" },
+  { label: "Industries", to: "/#industries", section: "industries" },
+  { label: "Brands", to: "/#brands", section: "brands" },
+  { label: "Catalogue", to: "/#catalogue", section: "catalogue" },
+  { label: "Contact", to: "/#contact", section: "contact" },
 ];

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useLocation } from "react-router";
 import * as Dialog from "@radix-ui/react-dialog";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
 import { Menu, Phone, X } from "lucide-react";
@@ -9,13 +10,18 @@ import { useActiveSection } from "@/hooks/useActiveSection";
 import { duration, ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
-const sectionIds = navItems.map((item) => item.href.slice(1));
+const sectionIds = navItems.map((item) => item.section);
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const { scrollY } = useScroll();
-  const active = useActiveSection(sectionIds) ?? "top";
+  const { pathname } = useLocation();
+  const onHome = pathname === "/";
+  // On the home page the nav follows the section in view; elsewhere it follows the page.
+  const spied = useActiveSection(onHome ? sectionIds : []) ?? "top";
+  const isActive = (item: (typeof navItems)[number]) =>
+    onHome ? item.section === spied : item.to !== "/" && pathname.startsWith(item.to);
 
   useMotionValueEvent(scrollY, "change", (y) => setScrolled(y > 24));
 
@@ -32,33 +38,33 @@ function Header() {
           scrolled ? "h-16" : "h-(--spacing-header)",
         )}
       >
-        <a href="#top" aria-label="Asiatic Engineering Co., home">
+        <Link to="/" aria-label="Asiatic Engineering Co., home">
           <Logo />
-        </a>
+        </Link>
 
         <nav aria-label="Main" className="hidden lg:block">
           <ul className="flex items-center gap-7">
             {navItems.map((item) => {
-              const isActive = item.href === `#${active}`;
+              const active = isActive(item);
               return (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    aria-current={isActive ? "true" : undefined}
+                <li key={item.to}>
+                  <Link
+                    to={item.to}
+                    aria-current={active ? "page" : undefined}
                     className={cn(
                       "relative block py-2 text-[0.9375rem] font-medium transition-colors duration-150 hover:text-surface",
-                      isActive ? "text-surface" : "text-ink-muted",
+                      active ? "text-surface" : "text-ink-muted",
                     )}
                   >
                     {item.label}
-                    {isActive && (
+                    {active && (
                       <motion.span
                         layoutId="nav-active"
                         className="absolute inset-x-0 -bottom-0.5 h-[3px] bg-signal"
                         transition={{ duration: duration.quick, ease: ease.out }}
                       />
                     )}
-                  </a>
+                  </Link>
                 </li>
               );
             })}
@@ -74,7 +80,7 @@ function Header() {
             {contact.mobile.label}
           </a>
           <Button asChild size="sm" className="hidden sm:inline-flex">
-            <a href="#contact">Enquire now</a>
+            <Link to="/#contact">Enquire now</Link>
           </Button>
 
           <Dialog.Root open={menuOpen} onOpenChange={setMenuOpen}>
@@ -124,7 +130,7 @@ function Header() {
                         <ul>
                           {navItems.map((item, i) => (
                             <motion.li
-                              key={item.href}
+                              key={item.to}
                               className="border-b border-ink-line"
                               initial={{ opacity: 0, x: 24 }}
                               animate={{ opacity: 1, x: 0 }}
@@ -134,13 +140,14 @@ function Header() {
                                 delay: 0.08 + i * 0.04,
                               }}
                             >
-                              <a
-                                href={item.href}
+                              <Link
+                                to={item.to}
                                 onClick={() => setMenuOpen(false)}
+                                aria-current={isActive(item) ? "page" : undefined}
                                 className="type-heading block py-4 hover:text-signal"
                               >
                                 {item.label}
-                              </a>
+                              </Link>
                             </motion.li>
                           ))}
                         </ul>
@@ -148,9 +155,9 @@ function Header() {
 
                       <div className="grid gap-3 p-gutter">
                         <Button asChild>
-                          <a href="#contact" onClick={() => setMenuOpen(false)}>
+                          <Link to="/#contact" onClick={() => setMenuOpen(false)}>
                             Enquire now
-                          </a>
+                          </Link>
                         </Button>
                         <Button asChild variant="outline-on-ink">
                           <a href={contact.mobile.href}>

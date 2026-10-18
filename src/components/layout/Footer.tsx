@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import Logo from "@/components/brand/Logo";
 import { company, navItems } from "@/data/site";
 
@@ -5,16 +6,16 @@ function Footer() {
   return (
     <footer className="border-t border-ink-line bg-ink text-surface">
       <div className="page flex flex-col gap-8 py-10 lg:flex-row lg:items-center lg:justify-between">
-        <a href="#top" aria-label="Asiatic Engineering Co., back to top">
+        <Link to="/" aria-label="Asiatic Engineering Co., home">
           <Logo />
-        </a>
+        </Link>
         <nav aria-label="Footer">
           <ul className="type-small flex flex-wrap gap-x-7 gap-y-3 font-medium">
             {navItems.map((item) => (
-              <li key={item.href}>
-                <a href={item.href} className="text-ink-muted hover:text-surface">
+              <li key={item.to}>
+                <Link to={item.to} className="text-ink-muted hover:text-surface">
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
