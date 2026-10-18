@@ -1,6 +1,9 @@
 import { motion } from "motion/react";
 import GearDrawing from "@/components/brand/GearDrawing";
+import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
+import { countWord, dealerBrands, leadBrands } from "@/lib/content/brands";
+import { useBrands } from "@/lib/content/hooks";
 import { duration, ease } from "@/lib/motion";
 import { publicAsset } from "@/lib/publicAsset";
 import { cn } from "@/lib/utils";
@@ -40,6 +43,29 @@ function Bands({ className }: { className?: string }) {
         </motion.div>
       ))}
     </div>
+  );
+}
+
+function DealerLine() {
+  const brands = useBrands();
+  if (brands.status !== "ready") return null;
+  const dealers = dealerBrands(brands.data);
+  if (dealers.length === 0) return null;
+  const { names, rest } = leadBrands(dealers);
+
+  return (
+    <p className="type-small mt-9 text-steel">
+      Authorized dealer for {names}
+      {rest > 0 && (
+        <>
+          {" "}and{" "}
+          <a href="#brands" className="link-rule text-ink">
+            {countWord(rest)} more {rest === 1 ? "brand" : "brands"}
+          </a>
+        </>
+      )}
+      .
+    </p>
   );
 }
 
@@ -84,20 +110,14 @@ function Hero() {
 
             <div className="mt-9 flex flex-wrap gap-3">
               <Button asChild variant="ink">
-                <a href="#products">View products</a>
+                <Link to="/products">View products</Link>
               </Button>
               <Button asChild variant="outline-on-light">
                 <a href="#contact">Enquire now</a>
               </Button>
             </div>
 
-            <p className="type-small mt-9 text-steel">
-              Authorized dealer for Stanley, Bosch, Karam and{" "}
-              <a href="#brands" className="link-rule text-ink">
-                seven more brands
-              </a>
-              .
-            </p>
+            <DealerLine />
           </motion.div>
         </div>
       </div>

@@ -1,22 +1,27 @@
 import { Button } from "@/components/ui/button";
 import { company, locations } from "@/data/site";
-import { brands } from "@/data/brands";
+import { dealerBrands, leadBrands, countWord } from "@/lib/content/brands";
+import { useBrands } from "@/lib/content/hooks";
+import type { Brand } from "@/lib/content/types";
 import { publicAsset } from "@/lib/publicAsset";
 
-const reasons = [
-  {
-    title: "We make what we sell",
-    body: "Our knitted gloves and PPE come off our own floor in Sriperumbudur, so quality and lead times are ours to control.",
-  },
-  {
-    title: `Authorized dealer for ${brands.length} brands`,
-    body: "Stanley, Bosch, Karam and seven more, supplied by us as an authorized dealer alongside our own lines.",
-  },
-  {
-    title: `On the job since ${company.established}`,
-    body: "More than 25 years of supplying nine sectors, from automobile lines to pharmaceutical plants.",
-  },
-];
+function dealerReason(dealers: Brand[]) {
+  const { names, rest } = leadBrands(dealers);
+  return {
+    title: `Authorized dealer for ${countWord(dealers.length)} brands`,
+    body: `${names}${rest > 0 ? ` and ${countWord(rest)} more` : ""}, supplied by us as an authorized dealer alongside our own lines.`,
+  };
+}
+
+const ownReason = {
+  title: "We make what we sell",
+  body: "Our knitted gloves and PPE come off our own floor in Sriperumbudur, so quality and lead times are ours to control.",
+};
+
+const experienceReason = {
+  title: `On the job since ${company.established}`,
+  body: "More than 25 years of supplying nine sectors, from automobile lines to pharmaceutical plants.",
+};
 
 // The company's registration facts, set out like an equipment rating plate.
 const plateRows = [
@@ -52,6 +57,10 @@ function RatingPlate() {
 }
 
 function About() {
+  const brands = useBrands();
+  const dealers = brands.status === "ready" ? dealerBrands(brands.data) : [];
+  const reasons = [ownReason, ...(dealers.length > 0 ? [dealerReason(dealers)] : []), experienceReason];
+
   return (
     <section id="about" className="section-y bg-paper">
       <div className="page grid gap-x-16 gap-y-block lg:grid-cols-[1.15fr_1fr]">
