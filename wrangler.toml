@@ -1,0 +1,17 @@
+# Cloudflare Pages project: static site from dist/, server code in functions/.
+name = "asiatic-engineering"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-11-01"
+
+# Catalogue and enquiries. database_id is filled in when the remote database is created;
+# local development (wrangler --local) works with the placeholder.
+[[d1_databases]]
+binding = "DB"
+database_name = "aec-db"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+# Images uploaded through the admin.
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "aec-media"

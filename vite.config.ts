@@ -4,12 +4,13 @@ import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react(), tailwindcss()],
-  base: '/AEC/',
+  // Cloudflare Pages serves the site from the root; GitHub Pages from /AEC/.
+  base: mode === 'cloudflare' ? '/' : '/AEC/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-})
+}))
