@@ -3,10 +3,10 @@ import CategoryTiles from "@/components/content/CategoryTiles";
 import { Loading, LoadError } from "@/components/content/ContentState";
 import EnquiryBand from "@/components/content/EnquiryBand";
 import { usePageMeta } from "@/hooks/usePageMeta";
-import { useCategories } from "@/lib/content/hooks";
+import { useTree } from "@/lib/content/hooks";
 
 function ProductsIndex() {
-  const categories = useCategories();
+  const categories = useTree();
   usePageMeta(
     "Products",
     "Industrial gloves and PPE from our own factory, plus tools, consumables and MRO supplies from Asiatic Engineering Co., Chennai.",

@@ -1,6 +1,5 @@
 // Starter catalogue, written in a neutral authoring format.
-// - The site renders it through src/lib/content/local.ts.
-// - It also seeds the database (see the database seed script).
+// It seeds the D1 database (scripts/seed-sql.ts); the site reads everything through /api.
 // Products are the FSD's product lines, marked as samples until the client supplies details.
 // Image paths are relative to /public.
 

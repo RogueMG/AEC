@@ -7,8 +7,7 @@ import NotFound from "./pages/NotFound";
 
 // Product pages load on demand so the home page bundle stays small.
 const ProductsIndex = lazy(() => import("./pages/ProductsIndex"));
-const CategoryPage = lazy(() => import("./pages/CategoryPage"));
-const ProductPage = lazy(() => import("./pages/ProductPage"));
+const NodePage = lazy(() => import("./pages/NodePage"));
 
 const pageFallback = (
   <div className="pt-(--spacing-header)">
@@ -24,8 +23,7 @@ function App() {
           <Route element={<SiteLayout />}>
             <Route index element={<Home />} />
             <Route path="products" element={<ProductsIndex />} />
-            <Route path="products/:categorySlug" element={<CategoryPage />} />
-            <Route path="products/:categorySlug/:productSlug" element={<ProductPage />} />
+            <Route path="products/*" element={<NodePage />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

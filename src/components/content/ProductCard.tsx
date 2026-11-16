@@ -3,17 +3,19 @@ import { ArrowRight } from "lucide-react";
 import type { ProductCard as ProductCardData } from "@/lib/content/types";
 
 function ProductCard({ product }: { product: ProductCardData }) {
-  const href = `/products/${product.categorySlug}/${product.slug}`;
+  const href = `/products/${product.path}`;
 
   return (
     <article className="group relative flex flex-col border border-line bg-surface transition-colors duration-200 hover:border-ink">
       <div className="aspect-[4/3] overflow-hidden bg-paper">
-        <img
-          src={product.image.src}
-          alt={product.image.alt}
-          loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
-        />
+        {product.image && (
+          <img
+            src={product.image.src}
+            alt={product.image.alt}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+          />
+        )}
       </div>
       <div className="flex flex-1 flex-col p-6">
         {product.brand && (

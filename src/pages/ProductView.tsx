@@ -1,38 +1,18 @@
-import { Link, useParams } from "react-router";
+import { Link } from "react-router";
 import { Mail, MessageCircle } from "lucide-react";
 import Breadcrumbs from "@/components/content/Breadcrumbs";
-import { Loading, LoadError } from "@/components/content/ContentState";
 import Gallery from "@/components/content/Gallery";
 import ProductCard from "@/components/content/ProductCard";
 import RichText from "@/components/content/RichText";
 import { tones } from "@/components/content/tones";
 import { Button } from "@/components/ui/button";
-import { usePageMeta } from "@/hooks/usePageMeta";
-import { useProduct } from "@/lib/content/hooks";
+import type { ProductNode } from "@/lib/content/types";
 import { emailHref, whatsappHref } from "@/lib/enquiry";
 import { cn } from "@/lib/utils";
-import NotFound from "@/pages/NotFound";
 
-function ProductPage() {
-  const { categorySlug = "", productSlug = "" } = useParams();
-  const result = useProduct(categorySlug, productSlug);
-  const product = result.status === "ready" ? result.data : null;
-  usePageMeta(product ? product.title : null, product?.summary);
-
-  if (result.status === "loading") {
-    return (
-      <div className="page grid gap-16 pt-[calc(var(--spacing-header)+4rem)] pb-16 lg:grid-cols-[1.15fr_1fr]">
-        <Loading className="aspect-[4/3]" label="Loading product" />
-        <Loading className="h-80" label="Loading product" />
-      </div>
-    );
-  }
-  if (result.status === "error") return <LoadError className="pt-[calc(var(--spacing-header)+4rem)]" />;
-  if (!product) return <NotFound what="product" />;
-
+function ProductView({ product }: { product: ProductNode }) {
   const tone = tones[product.category.tone];
-  const categoryHref = `/products/${product.category.slug}`;
-  const images = product.images.filter((image) => image.src);
+  const categoryHref = `/products/${product.category.path}`;
   const message = `Hello, I'd like a quote for ${product.title} (${product.category.title}).`;
   const hasDetails = product.description.length > 0 || product.specifications.length > 0;
 
@@ -44,13 +24,13 @@ function ProductPage() {
             className="text-steel"
             items={[
               { label: "Products", to: "/products" },
-              { label: product.category.title, to: categoryHref },
+              ...product.breadcrumb.map((crumb) => ({ label: crumb.title, to: `/products/${crumb.path}` })),
               { label: product.title },
             ]}
           />
 
           <div className="mt-8 grid gap-x-16 gap-y-10 lg:grid-cols-[1.15fr_1fr]">
-            <Gallery images={images} accent={tone.dot} />
+            <Gallery images={product.images} accent={tone.dot} />
 
             <div>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -170,4 +150,4 @@ function ProductPage() {
   );
 }
 
-export default ProductPage;
+export default ProductView;

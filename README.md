@@ -9,20 +9,31 @@ Pages from `main` at https://roguemg.github.io/AEC/.
 | --- | --- |
 | `/` | Home |
 | `/products` | All categories |
-| `/products/:category` | One category and its products |
-| `/products/:category/:product` | Product page |
+| `/products/<category>/…` | A category at any depth: its sub-categories and products |
+| `/products/<category>/…/<product>` | Product page |
 
 ## Content
 
-Products, categories and brands currently come from the starter catalogue in
-`src/data/catalogue.ts`, read through the hooks in `src/lib/content/hooks.ts`. They are moving to
-a Cloudflare D1 database with an admin panel.
+Categories (nested to any depth), products and brands live in a Cloudflare D1 database and are
+served by Pages Functions:
+
+| Endpoint | Returns |
+| --- | --- |
+| `GET /api/tree` | Top-level categories with sub-categories nested to any depth |
+| `GET /api/node?path=a/b/c` | The category or product at that path, or 404 |
+| `GET /api/brands` | All brands in display order |
+| `GET /media/<key>` | An uploaded image from R2 |
+
+Server code is in `functions/` (routes) and `server/` (shared logic); response types are in
+`src/lib/content/types.ts`. The starter catalogue in `src/data/catalogue.ts` seeds the database.
 
 ## Scripts
 
 | Command | What it does |
 | --- | --- |
-| `npm run dev` | Site dev server at http://localhost:5173/AEC/ |
+| `npm run dev:full` | **Day-to-day development:** site with instant reload at http://localhost:5173 plus the local Cloudflare server for `/api` and `/media` |
+| `npm run dev` | Site dev server only (needs `npm run dev:api` running for content) |
+| `npm run dev:api` | Local Cloudflare server only, at http://127.0.0.1:8788 |
 | `npm run build` | Production build into `dist/`, including the `404.html` fallback for deep links |
 | `npm run lint` | ESLint |
 | `npm run build:cf` | Production build for Cloudflare Pages (served from `/`) |
