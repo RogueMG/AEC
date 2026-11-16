@@ -1,4 +1,3 @@
-import type { PortableTextBlock } from "@portabletext/react";
 import {
   seedBrands,
   seedCategories,
@@ -18,20 +17,17 @@ import type {
   ProductCard,
 } from "./types";
 
-// The local starter catalogue, shaped exactly like the Sanity query results.
+// The local starter catalogue, shaped like the content the pages render.
 
 const byOrder = <T extends { order: number }>(a: T, b: T) => a.order - b.order;
 
 const toImage = (image: SeedImage): ContentImage => ({ src: publicAsset(image.src), alt: image.alt });
 
-function toBlocks(paragraphs: string[]): PortableTextBlock[] {
-  return paragraphs.map((text, i) => ({
-    _type: "block",
-    _key: `p${i}`,
-    style: "normal",
-    markDefs: [],
-    children: [{ _type: "span", _key: `s${i}`, text, marks: [] }],
-  }));
+const escapeHtml = (text: string) =>
+  text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+function toHtml(paragraphs: string[]): string {
+  return paragraphs.map((text) => `<p>${escapeHtml(text)}</p>`).join("");
 }
 
 function brandSummary(slug: string | undefined): BrandSummary | undefined {
@@ -86,7 +82,7 @@ export function localProduct(categorySlug: string, slug: string): Product | null
     category: { slug: category.slug, title: category.title, tone: category.tone },
     images: product.images.map(toImage),
     keyFeatures: product.keyFeatures,
-    description: toBlocks(product.description),
+    description: toHtml(product.description),
     specifications: product.specifications,
     variants: product.variants,
     isSample: product.isSample,

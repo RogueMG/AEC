@@ -125,7 +125,7 @@ function ProductPage() {
               <div>
                 <h2 className="type-heading">About this product</h2>
                 <div className="measure mt-6">
-                  <RichText value={product.description} />
+                  <RichText html={product.description} />
                 </div>
               </div>
             )}

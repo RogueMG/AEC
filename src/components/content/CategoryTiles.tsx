@@ -42,7 +42,6 @@ function CategoryTile({ category, headingLevel }: { category: Category; headingL
           liftedCut={CUT_LIFTED}
           lifted={lifted}
           columnStagger={COLUMN_STAGGER}
-          sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 100vw"
           className="h-56"
         />
       </Link>

@@ -43,7 +43,6 @@ function CategoryPage() {
           cut={cutFor(BAND_PHOTO_HEIGHT)}
           revealOn="mount"
           loading="eager"
-          sizes="(min-width: 1024px) 46vw, 100vw"
           className="absolute top-(--spacing-header) right-0 bottom-0 hidden w-[46%] lg:block"
         />
         <div className="page relative py-14 lg:min-h-[30rem] lg:py-20">

@@ -1,24 +1,21 @@
-import { cmsEnabled } from "./config";
 import { localBrands, localCategories, localCategory, localProduct } from "./local";
-import { fetchBrands, fetchCategories, fetchCategory, fetchProduct } from "./sanity";
 import { useResource } from "./store";
 
+// Content currently comes from the local starter catalogue. These hooks are the only place
+// the pages get content from, so switching to the Cloudflare API only changes this file.
+
 export function useCategories() {
-  return useResource("categories", cmsEnabled ? fetchCategories : localCategories);
+  return useResource("categories", localCategories);
 }
 
 export function useCategory(slug: string) {
-  return useResource(`category:${slug}`, () =>
-    cmsEnabled ? fetchCategory(slug) : localCategory(slug),
-  );
+  return useResource(`category:${slug}`, () => localCategory(slug));
 }
 
 export function useProduct(categorySlug: string, slug: string) {
-  return useResource(`product:${categorySlug}/${slug}`, () =>
-    cmsEnabled ? fetchProduct(categorySlug, slug) : localProduct(categorySlug, slug),
-  );
+  return useResource(`product:${categorySlug}/${slug}`, () => localProduct(categorySlug, slug));
 }
 
 export function useBrands() {
-  return useResource("brands", cmsEnabled ? fetchBrands : localBrands);
+  return useResource("brands", localBrands);
 }

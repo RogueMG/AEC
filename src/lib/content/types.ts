@@ -1,6 +1,4 @@
-import type { PortableTextBlock } from "@portabletext/react";
-
-// The shapes the site renders. Both the Sanity queries and the local fallback return these.
+// The shapes the site renders, whatever the content source.
 
 export type Tone = "coral" | "yellow" | "teal" | "navy";
 
@@ -49,7 +47,8 @@ export type Product = ProductCard & {
   category: { slug: string; title: string; tone: Tone };
   images: ContentImage[];
   keyFeatures: string[];
-  description: PortableTextBlock[];
+  /** Sanitised HTML: paragraphs, h3 headings, bullet lists, bold and italic. */
+  description: string;
   specifications: Spec[];
   variants: string[];
   isSample: boolean;

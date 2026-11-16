@@ -1,6 +1,6 @@
 // Starter catalogue, written in a neutral authoring format.
-// - The site renders it when no Sanity project is configured (see src/lib/content/local.ts).
-// - scripts/build-seed.ts turns it into sanity/seed.ndjson for a one-off import into Sanity.
+// - The site renders it through src/lib/content/local.ts.
+// - It also seeds the database (see the database seed script).
 // Products are the FSD's product lines, marked as samples until the client supplies details.
 // Image paths are relative to /public.
 

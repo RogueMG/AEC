@@ -8,7 +8,6 @@ import {
   useReducedMotion,
   useTransform,
 } from "motion/react";
-import { imageSrcSet, imageUrl } from "@/lib/content/image";
 import type { ContentImage } from "@/lib/content/types";
 import { duration, ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
@@ -28,8 +27,6 @@ type SlantedPhotoProps = {
   columnStagger?: number;
   /** Reveal on first scroll into view, or straight away on mount. */
   revealOn?: "view" | "mount";
-  widths?: number[];
-  sizes?: string;
   className?: string;
   loading?: "lazy" | "eager";
 };
@@ -45,8 +42,6 @@ function SlantedPhoto({
   delay = 0,
   columnStagger = 0,
   revealOn = "view",
-  widths = [480, 800, 1200],
-  sizes = "100vw",
   className,
   loading = "lazy",
 }: SlantedPhotoProps) {
@@ -92,9 +87,7 @@ function SlantedPhoto({
     <div ref={ref} className={cn("relative", className)}>
       <motion.div className="absolute inset-0 overflow-hidden" style={{ clipPath }}>
         <motion.img
-          src={imageUrl(image, widths[widths.length - 1])}
-          srcSet={imageSrcSet(image, widths)}
-          sizes={sizes}
+          src={image.src}
           alt={image.alt}
           loading={loading}
           className="absolute inset-0 h-full w-full object-cover"

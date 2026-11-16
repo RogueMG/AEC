@@ -1,6 +1,5 @@
 import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
-import { imageSrcSet, imageUrl } from "@/lib/content/image";
 import type { ProductCard as ProductCardData } from "@/lib/content/types";
 
 function ProductCard({ product }: { product: ProductCardData }) {
@@ -10,9 +9,7 @@ function ProductCard({ product }: { product: ProductCardData }) {
     <article className="group relative flex flex-col border border-line bg-surface transition-colors duration-200 hover:border-ink">
       <div className="aspect-[4/3] overflow-hidden bg-paper">
         <img
-          src={imageUrl(product.image, 800)}
-          srcSet={imageSrcSet(product.image, [400, 800, 1200])}
-          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+          src={product.image.src}
           alt={product.image.alt}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"

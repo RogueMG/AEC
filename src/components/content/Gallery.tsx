@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { imageSrcSet, imageUrl } from "@/lib/content/image";
 import type { ContentImage } from "@/lib/content/types";
 import { duration } from "@/lib/motion";
 import { cn } from "@/lib/utils";
@@ -18,9 +17,7 @@ function Gallery({ images, accent }: GalleryProps) {
         <AnimatePresence initial={false}>
           <motion.img
             key={current.src}
-            src={imageUrl(current, 1400)}
-            srcSet={imageSrcSet(current, [700, 1000, 1400, 2000])}
-            sizes="(min-width: 1024px) 55vw, 100vw"
+            src={current.src}
             alt={current.alt}
             className="absolute inset-0 h-full w-full object-cover"
             initial={{ opacity: 0 }}
@@ -48,7 +45,7 @@ function Gallery({ images, accent }: GalleryProps) {
                 )}
               >
                 <img
-                  src={imageUrl(image, 240)}
+                  src={image.src}
                   alt=""
                   loading="lazy"
                   className="h-full w-full object-cover"
