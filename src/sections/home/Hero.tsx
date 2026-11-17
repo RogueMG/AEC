@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { countWord, dealerBrands, leadBrands } from "@/lib/content/brands";
 import { useBrands } from "@/lib/content/hooks";
 import { duration, ease } from "@/lib/motion";
+import { sizes, srcSetFor } from "@/lib/images";
 import { publicAsset } from "@/lib/publicAsset";
 import { cn } from "@/lib/utils";
 
@@ -35,8 +36,14 @@ function Bands({ className }: { className?: string }) {
         >
           {band.photo && (
             <img
-              src={publicAsset("images/hero-sparks.jpg")}
+              src={publicAsset("images/hero-sparks.webp")}
+              srcSet={srcSetFor("images/hero-sparks.webp")}
+              sizes={sizes.half}
               alt=""
+              width={1800}
+              height={1200}
+              fetchPriority="high"
+              decoding="async"
               className="cut-inverse absolute inset-y-0 -left-28 h-full w-[calc(100%+14rem)] max-w-none object-cover"
             />
           )}

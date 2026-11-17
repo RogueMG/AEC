@@ -102,6 +102,39 @@ To turn it on (needs a custom domain on Cloudflare):
 3. Uncomment the `[[services]]` `MAILER` block in `wrangler.toml` and redeploy the site.
 4. Send a test enquiry and check that the email arrives and the admin says "Email sent".
 
+## Search engines and link previews
+
+The site is a single-page app, so `functions/_middleware.ts` fills in the shared `index.html` on
+Cloudflare before each page is sent (logic in `server/seo.ts`). It only touches page requests, not
+`/api`, `/media`, files or the admin. For each page it sets:
+
+- the title, description and **canonical address** (query strings and trailing slashes dropped);
+- Open Graph and Twitter tags for link previews (the page's photo, or `public/images/og-image.jpg`);
+- **JSON-LD structured data**: the Organization on every page, plus WebSite and both locations as
+  LocalBusiness on the home page, and BreadcrumbList on catalogue pages. Products have no Product
+  markup: Google only accepts it with a price, offer or reviews, which the catalogue doesn't publish;
+- a `preload` hint for the page's main photo, so it starts downloading before the app runs;
+- a plain-text summary of the page inside `#root` for crawlers that don't run JavaScript (kept out
+  of view, and replaced by the app as it loads).
+
+Unknown addresses, including product links that don't exist, get a real **404** status with
+`noindex`. The admin gets an `X-Robots-Tag: noindex, nofollow` header.
+
+`/sitemap.xml` lists every published category and product with its last-changed date, straight
+from the database; `/robots.txt` keeps `/admin` and `/api/` out of search engines and points to the
+sitemap (`server/sitemap.ts`).
+
+Every address in these comes from the **`SITE_URL`** setting (e.g. `https://asiatic-engineering.pages.dev`,
+no trailing slash), or the address the request came in on when it isn't set. Changing it to the
+custom domain later switches canonicals, previews and the sitemap in one go.
+
+### Images
+
+The site's own photos in `public/images/` are WebP, each with smaller copies (`-640w`, `-800w`,
+`-1200w`) listed in `src/lib/imageVariants.ts`, so phones download a copy that fits the screen.
+Logos shown on the page use 96px copies (`logo-mark-96.webp`, `logo-mark-white-96.webp`); the 512px
+PNG stays for search engines. When replacing a photo, add its copies and its width there too.
+
 ## Scripts
 
 | Command | What it does |
@@ -119,6 +152,7 @@ To turn it on (needs a custom domain on Cloudflare):
 | `npm run test:admin` | End-to-end admin API checks against a running `npm run dev:api` (cleans up after itself) |
 | `npm run test:enquiries` | End-to-end enquiry checks (validation, honeypot, rate limit, Turnstile, admin inbox) against a running `npm run dev:api`. Add a second URL for a server started with `--binding TURNSTILE_SECRET=2x0000000000000000000000000000000AA` to also test a failed bot check. Cleans up after itself |
 | `npm run test:enquiry-units` | Email notification and mailer message checks, with stand-in mailers and no network |
+| `npm run test:seo` | What search engines see on every page type, status codes, sitemap and robots, and escaping, against `npm run build:cf` + `npm run dev:api`. Add a second URL for a server started with `--binding SITE_URL=https://aec.example` to check the address switch. Cleans up after itself |
 
 ## Design system
 

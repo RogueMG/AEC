@@ -17,7 +17,8 @@
     "test:auth": "node scripts/test-auth.ts",
     "test:admin": "node scripts/test-admin.mjs",
     "test:enquiries": "node scripts/test-enquiries.mjs",
-    "test:enquiry-units": "node scripts/test-enquiry-units.ts"
+    "test:enquiry-units": "node scripts/test-enquiry-units.ts",
+    "test:seo": "node scripts/test-seo.mjs"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",

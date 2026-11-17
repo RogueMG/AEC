@@ -44,7 +44,7 @@ export default function AdminApp() {
       <header className="sticky top-0 z-20 bg-ink text-surface">
         <div className="flex h-14 items-center gap-4 px-4 sm:gap-6 sm:px-6">
           <a href="/" className="flex shrink-0 items-center gap-2.5" aria-label="View the site">
-            <img src={publicAsset("images/logo-mark-white.png")} alt="" className="size-8" />
+            <img src={publicAsset("images/logo-mark-white-96.webp")} alt="" width={32} height={32} className="size-8" />
             <span className="type-label hidden sm:inline">AEC admin</span>
           </a>
           <nav aria-label="Admin" className="flex gap-3.5 sm:gap-5">

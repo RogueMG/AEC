@@ -7,6 +7,7 @@ import { tones } from "@/components/content/tones";
 import { countWord } from "@/lib/content/brands";
 import type { CategoryNode } from "@/lib/content/types";
 import { cutFor } from "@/lib/cut";
+import { sizes } from "@/lib/images";
 import { cn } from "@/lib/utils";
 
 // The photo fills the band below the header on wide screens; it is about this tall.
@@ -33,6 +34,7 @@ function CategoryView({ category }: { category: CategoryNode }) {
             cut={cutFor(BAND_PHOTO_HEIGHT)}
             revealOn="mount"
             loading="eager"
+            sizes={sizes.categoryHeader}
             className="absolute top-(--spacing-header) right-0 bottom-0 hidden w-[46%] lg:block"
           />
         )}
@@ -70,6 +72,7 @@ function CategoryView({ category }: { category: CategoryNode }) {
             cut={cutFor(224)}
             revealOn="mount"
             loading="eager"
+            sizes={sizes.categoryHeader}
             className="h-56 lg:hidden"
           />
         )}
@@ -90,8 +93,8 @@ function CategoryView({ category }: { category: CategoryNode }) {
             <h2 className="type-title">{childCount > 0 ? `Also in ${category.title}` : "In this category"}</h2>
             {productCount > 0 ? (
               <div className="mt-block grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {category.productCards.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                {category.productCards.map((product, i) => (
+                  <ProductCard key={product.id} product={product} priority={i === 0} />
                 ))}
               </div>
             ) : (

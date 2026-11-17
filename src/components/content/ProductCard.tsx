@@ -1,8 +1,10 @@
 import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
 import type { ProductCard as ProductCardData } from "@/lib/content/types";
+import { sizes, srcSetFor } from "@/lib/images";
 
-function ProductCard({ product }: { product: ProductCardData }) {
+// priority: the first card on a page is often the biggest thing on a phone screen, so load it first.
+function ProductCard({ product, priority = false }: { product: ProductCardData; priority?: boolean }) {
   const href = `/products/${product.path}`;
 
   return (
@@ -12,7 +14,11 @@ function ProductCard({ product }: { product: ProductCardData }) {
           <img
             src={product.image.src}
             alt={product.image.alt}
-            loading="lazy"
+            srcSet={srcSetFor(product.image.src)}
+            sizes={sizes.tile}
+            loading={priority ? "eager" : "lazy"}
+            fetchPriority={priority ? "high" : undefined}
+            decoding="async"
             className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           />
         )}

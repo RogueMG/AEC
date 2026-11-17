@@ -1,6 +1,7 @@
 import { Download, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { company, contact } from "@/data/site";
+import { sizes, srcSetFor } from "@/lib/images";
 import { publicAsset } from "@/lib/publicAsset";
 
 const requestHref = `${contact.email.href}?subject=${encodeURIComponent("Catalogue request")}`;
@@ -16,9 +17,14 @@ function Catalogue() {
         <span className="basis-[9%] bg-teal" />
         <span className="relative basis-[52%] overflow-hidden bg-ink">
           <img
-            src={publicAsset("images/catalogue-workshop.jpg")}
+            src={publicAsset("images/catalogue-workshop.webp")}
+            srcSet={srcSetFor("images/catalogue-workshop.webp")}
+            sizes={sizes.half}
             alt=""
+            width={1200}
+            height={800}
             loading="lazy"
+            decoding="async"
             className="cut-inverse absolute inset-y-0 -left-24 h-full w-[calc(100%+12rem)] max-w-none object-cover"
           />
         </span>

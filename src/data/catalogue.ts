@@ -34,13 +34,13 @@ export type SeedProduct = {
 };
 
 const img = {
-  ppe: { src: "images/cat-safety-ppe.jpg", alt: "Yellow leather work gloves laid out on a workbench" },
-  tools: { src: "images/cat-hardware-tools.jpg", alt: "Steel spanners arranged on a workshop surface" },
-  paints: { src: "images/cat-consumables.jpg", alt: "Spray paint cans seen from above" },
-  mro: { src: "images/cat-mro.jpg", alt: "Tapered roller bearing on a bright surface" },
-  welding: { src: "images/hero-sparks.jpg", alt: "Sparks flying from metal being ground" },
-  floor: { src: "images/about-floor.jpg", alt: "Workers at an assembly line on a factory floor" },
-  workshop: { src: "images/catalogue-workshop.jpg", alt: "Machinist at work in a busy workshop" },
+  ppe: { src: "images/cat-safety-ppe.webp", alt: "Yellow leather work gloves laid out on a workbench" },
+  tools: { src: "images/cat-hardware-tools.webp", alt: "Steel spanners arranged on a workshop surface" },
+  paints: { src: "images/cat-consumables.webp", alt: "Spray paint cans seen from above" },
+  mro: { src: "images/cat-mro.webp", alt: "Tapered roller bearing on a bright surface" },
+  welding: { src: "images/hero-sparks.webp", alt: "Sparks flying from metal being ground" },
+  floor: { src: "images/about-floor.webp", alt: "Workers at an assembly line on a factory floor" },
+  workshop: { src: "images/catalogue-workshop.webp", alt: "Machinist at work in a busy workshop" },
 } satisfies Record<string, SeedImage>;
 
 export const seedCategories: SeedCategory[] = [

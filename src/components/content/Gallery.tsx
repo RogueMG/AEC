@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import type { ContentImage } from "@/lib/content/types";
+import { sizes, srcSetFor, thumbnailFor } from "@/lib/images";
 import { duration } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +19,11 @@ function Gallery({ images, accent }: GalleryProps) {
           <motion.img
             key={current.src}
             src={current.src}
+            srcSet={srcSetFor(current.src)}
+            sizes={sizes.half}
             alt={current.alt}
+            fetchPriority={index === 0 ? "high" : undefined}
+            decoding="async"
             className="absolute inset-0 h-full w-full object-cover"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -45,9 +50,10 @@ function Gallery({ images, accent }: GalleryProps) {
                 )}
               >
                 <img
-                  src={image.src}
+                  src={thumbnailFor(image.src)}
                   alt=""
                   loading="lazy"
+                  decoding="async"
                   className="h-full w-full object-cover"
                 />
               </button>

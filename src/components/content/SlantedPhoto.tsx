@@ -9,6 +9,7 @@ import {
   useTransform,
 } from "motion/react";
 import type { ContentImage } from "@/lib/content/types";
+import { sizes as imageSizes, srcSetFor } from "@/lib/images";
 import { duration, ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +30,8 @@ type SlantedPhotoProps = {
   revealOn?: "view" | "mount";
   className?: string;
   loading?: "lazy" | "eager";
+  /** How wide the photo shows, so the browser can pick a smaller copy (src/lib/images.ts). */
+  sizes?: string;
 };
 
 // A full-bleed photo with one edge on the site's cut angle. The tile colour wipes off it
@@ -44,6 +47,7 @@ function SlantedPhoto({
   revealOn = "view",
   className,
   loading = "lazy",
+  sizes = imageSizes.tile,
 }: SlantedPhotoProps) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
@@ -89,7 +93,11 @@ function SlantedPhoto({
         <motion.img
           src={image.src}
           alt={image.alt}
+          srcSet={srcSetFor(image.src)}
+          sizes={sizes}
           loading={loading}
+          fetchPriority={loading === "eager" ? "high" : undefined}
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
           animate={{ scale: lifted ? 1.05 : 1 }}
           transition={{ duration: duration.slow, ease: ease.out }}
