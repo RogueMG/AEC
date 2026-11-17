@@ -11,6 +11,8 @@ Pages from `main` at https://roguemg.github.io/AEC/.
 | `/products` | All categories |
 | `/products/<category>/…` | A category at any depth: its sub-categories and products |
 | `/products/<category>/…/<product>` | Product page |
+| `/admin` | Admin: catalogue tree and edit forms (behind Cloudflare Access) |
+| `/admin/brands` | Admin: brands |
 
 ## Content
 
@@ -31,6 +33,9 @@ uploads images to R2 (`/api/admin/upload`). Every request must carry a valid Clo
 sign-in token, verified in `server/auth.ts`; changes must also send the `X-AEC-Admin: 1` header.
 Product descriptions are cleaned to safe HTML on save (`server/sanitize.ts`), and uploads that
 nothing uses any more are deleted from R2.
+
+The admin screens live in `src/admin/` and are only downloaded by people who open `/admin`.
+Uploads are resized in the browser to WebP (at most 1600px) before they're sent.
 
 For local development, copy `.dev.vars.example` to `.dev.vars`. It skips the Access check for
 requests to localhost only.

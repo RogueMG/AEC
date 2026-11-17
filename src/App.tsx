@@ -8,6 +8,8 @@ import NotFound from "./pages/NotFound";
 // Product pages load on demand so the home page bundle stays small.
 const ProductsIndex = lazy(() => import("./pages/ProductsIndex"));
 const NodePage = lazy(() => import("./pages/NodePage"));
+// The admin is only downloaded by people who open it.
+const AdminApp = lazy(() => import("./admin/AdminApp"));
 
 const pageFallback = (
   <div className="pt-(--spacing-header)">
@@ -20,6 +22,7 @@ function App() {
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Suspense fallback={pageFallback}>
         <Routes>
+          <Route path="admin/*" element={<AdminApp />} />
           <Route element={<SiteLayout />}>
             <Route index element={<Home />} />
             <Route path="products" element={<ProductsIndex />} />

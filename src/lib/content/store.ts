@@ -44,3 +44,9 @@ export function useResource<T>(key: string, load: () => T | Promise<T>): Resourc
   ensure(key, load);
   return useSyncExternalStore(subscribe, () => (entries.get(key) ?? LOADING) as Resource<T>);
 }
+
+/** Forget every cached response, e.g. after an admin edit, so pages refetch fresh content. */
+export function clearResources(): void {
+  entries.clear();
+  listeners.forEach((listener) => listener());
+}
