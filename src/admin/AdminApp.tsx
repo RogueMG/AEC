@@ -43,7 +43,7 @@ export default function AdminApp() {
     <div className="flex min-h-svh flex-col bg-paper text-ink">
       <header className="sticky top-0 z-20 bg-ink text-surface">
         <div className="flex h-14 items-center gap-4 px-4 sm:gap-6 sm:px-6">
-          <a href="/" className="flex shrink-0 items-center gap-2.5" aria-label="View the site">
+          <a href="/" className="flex shrink-0 items-center gap-2.5" aria-label="AEC admin: view the site">
             <img src={publicAsset("images/logo-mark-white-96.webp")} alt="" width={32} height={32} className="size-8" />
             <span className="type-label hidden sm:inline">AEC admin</span>
           </a>
@@ -75,18 +75,21 @@ export default function AdminApp() {
         </div>
       </header>
 
-      {authError ? (
-        <div className="p-8">
-          <p className="type-subhead">You're not signed in to the admin</p>
-          <p className="type-body mt-2 text-steel">{authError}</p>
-        </div>
-      ) : (
-        <Routes>
-          <Route index element={<CatalogueScreen />} />
-          <Route path="brands" element={<BrandsScreen />} />
-          <Route path="enquiries" element={<EnquiriesScreen onCounts={onCounts} />} />
-        </Routes>
-      )}
+      <main id="main" className="flex min-h-0 flex-1 flex-col">
+        <h1 className="sr-only">Asiatic Engineering Co. admin</h1>
+        {authError ? (
+          <div className="p-8">
+            <p className="type-subhead">You're not signed in to the admin</p>
+            <p className="type-body mt-2 text-steel">{authError}</p>
+          </div>
+        ) : (
+          <Routes>
+            <Route index element={<CatalogueScreen />} />
+            <Route path="brands" element={<BrandsScreen />} />
+            <Route path="enquiries" element={<EnquiriesScreen onCounts={onCounts} />} />
+          </Routes>
+        )}
+      </main>
     </div>
   );
 }

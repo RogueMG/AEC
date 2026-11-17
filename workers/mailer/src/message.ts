@@ -9,7 +9,7 @@ export type BuiltMessage = { ok: true; raw: string } | { ok: false; status: 400;
 const oneLine = (value: string) => value.replace(/[\r\n]+/g, " ").trim();
 const EMAIL = /^[^\s@<>,;:"]+@[^\s@<>,;:"]+\.[^\s@<>,;:"]{2,}$/;
 
-export const base64 = (text: string) => {
+const base64 = (text: string) => {
   const bytes = new TextEncoder().encode(text);
   let binary = "";
   bytes.forEach((b) => (binary += String.fromCharCode(b)));

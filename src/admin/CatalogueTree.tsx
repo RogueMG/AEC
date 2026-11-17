@@ -3,6 +3,7 @@ import { ArrowDown, ArrowUp, ChevronRight, FolderPlus, Package, PackagePlus } fr
 import { iconButton } from "@/admin/components/styles";
 import type { Indexed, Selection } from "@/admin/tree";
 import type { AdminCategory, AdminProductItem } from "@/lib/admin/types";
+import { thumbnailFor } from "@/lib/images";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -49,7 +50,7 @@ export default function CatalogueTree({ index, selection, onSelect, onMove, busy
       <div className={cn("group flex items-center gap-2 py-1 pr-2", isSelected("product", p.id) ? "bg-signal/40" : "hover:bg-surface")} style={{ paddingLeft: `${0.75 + depth * 1.1}rem` }}>
         <span className="size-5 shrink-0" />
         <button type="button" onClick={() => onSelect({ kind: "product", id: p.id })} className="flex min-w-0 flex-1 items-center gap-2 py-1 text-left">
-          {p.thumb ? <img src={p.thumb} alt="" className="size-6 shrink-0 bg-paper object-cover" /> : <Package className="size-4 shrink-0 text-steel" aria-hidden />}
+          {p.thumb ? <img src={thumbnailFor(p.thumb)} alt="" loading="lazy" decoding="async" className="size-6 shrink-0 bg-paper object-cover" /> : <Package className="size-4 shrink-0 text-steel" aria-hidden />}
           <span className="truncate text-[0.875rem]">{p.title}</span>
           {!p.published && <span className="type-label shrink-0 bg-line px-1.5 text-[0.6875rem]">Draft</span>}
         </button>

@@ -5,7 +5,7 @@
 import { company, contact, locations } from "../src/data/site";
 import type { CategoryNode, ContentImage, PathLink, ProductNode, TreeCategory } from "../src/lib/content/types";
 import { imageSizes, variantSrcSet } from "../src/lib/imageVariants";
-import { getNode, getTree } from "./catalogue";
+import { getBrands, getNode, getTree } from "./catalogue";
 
 export type SeoEnv = {
   DB: D1Database;
@@ -27,15 +27,17 @@ export type PageSeo = {
   summary: string;
   /** The page's main photo, so the browser starts fetching it before the app has rendered. */
   preload?: Preload;
+  /** API responses the page needs straight away, keyed like the app's cache (src/lib/content/store.ts). */
+  initialData: Record<string, unknown>;
 };
 
 export type Preload = { href: string; srcset?: string; sizes?: string };
 const preloadFor = (src: string | undefined, sizes: string): Preload | undefined =>
   src ? { href: src, srcset: variantSrcSet(src), sizes: variantSrcSet(src) ? sizes : undefined } : undefined;
 
-export const SITE_NAME = company.name;
-export const DEFAULT_TITLE = `${company.name} | Industrial products and supply, Chennai`;
-export const DEFAULT_DESCRIPTION =
+const SITE_NAME = company.name;
+const DEFAULT_TITLE = `${company.name} | Industrial products and supply, Chennai`;
+const DEFAULT_DESCRIPTION =
   "Asiatic Engineering Co. makes knitted industrial gloves and PPE and supplies tools, consumables and MRO products to manufacturers in South India. Since 1999.";
 const PRODUCTS_DESCRIPTION =
   "Industrial gloves and PPE from our own factory, plus tools, consumables and MRO supplies from Asiatic Engineering Co., Chennai.";
@@ -140,7 +142,7 @@ const graph = (...nodes: Record<string, unknown>[]) => [{ "@context": "https://s
 
 // ---------- pages
 
-function home(base: string, tree: TreeCategory[]): PageSeo {
+function home(base: string, tree: TreeCategory[], brands: unknown): PageSeo {
   const categories = tree.map((c) => `${link(productHref(c.path), c.title)}${c.summary ? `: ${escapeHtml(c.summary)}` : ""}`);
   return {
     status: 200,
@@ -152,6 +154,7 @@ function home(base: string, tree: TreeCategory[]): PageSeo {
     ogType: "website",
     jsonLd: graph(organization(base), website(base), ...localBusinesses(base)),
     preload: preloadFor("/images/hero-sparks.webp", imageSizes.half),
+    initialData: { tree, brands },
     summary: [
       `<h1>${escapeHtml(company.name)}</h1>`,
       `<p>${escapeHtml(DEFAULT_DESCRIPTION)}</p>`,
@@ -178,13 +181,14 @@ function productsIndex(base: string, tree: TreeCategory[]): PageSeo {
     image: DEFAULT_IMAGE,
     ogType: "website",
     jsonLd: graph(organization(base), breadcrumbList(base, [{ name: "Home", path: "/" }, { name: "Products", path: "/products" }])),
+    initialData: { tree },
     summary: `<h1>Products</h1><p>${escapeHtml(PRODUCTS_DESCRIPTION)}</p>${list(items)}`,
   };
 }
 
 const imageOr = (image: ContentImage | null, fallbackAlt: string) => (image ? { src: image.src, alt: image.alt || fallbackAlt } : DEFAULT_IMAGE);
 
-function category(base: string, node: CategoryNode): PageSeo {
+function category(base: string, node: CategoryNode, key: string): PageSeo {
   const path = productHref(node.path);
   const description = clip(node.summary || `${node.title} from ${company.name}, Chennai: ${PRODUCTS_DESCRIPTION}`);
   return {
@@ -196,6 +200,7 @@ function category(base: string, node: CategoryNode): PageSeo {
     image: imageOr(node.image, node.title),
     ogType: "website",
     preload: preloadFor(node.image?.src ?? node.productCards[0]?.image?.src, node.image ? imageSizes.categoryHeader : imageSizes.tile),
+    initialData: { [key]: node },
     jsonLd: graph(organization(base), breadcrumbList(base, crumbs(node.breadcrumb, { name: node.title, path }))),
     summary: [
       summaryTrail(node.breadcrumb),
@@ -209,7 +214,7 @@ function category(base: string, node: CategoryNode): PageSeo {
   };
 }
 
-function product(base: string, node: ProductNode): PageSeo {
+function product(base: string, node: ProductNode, key: string): PageSeo {
   const path = productHref(node.path);
   const description = clip(node.summary || node.description || `${node.title} from ${company.name}, Chennai.`);
   return {
@@ -221,6 +226,7 @@ function product(base: string, node: ProductNode): PageSeo {
     image: imageOr(node.image, node.title),
     ogType: "product",
     preload: preloadFor(node.image?.src, imageSizes.half),
+    initialData: { [key]: node },
     // No Product markup: Google only accepts it with a price, offer or reviews, which this
     // catalogue doesn't publish. Breadcrumbs still show the page's place in the catalogue.
     jsonLd: graph(organization(base), breadcrumbList(base, crumbs(node.breadcrumb, { name: node.title, path }))),
@@ -239,7 +245,7 @@ function product(base: string, node: ProductNode): PageSeo {
   };
 }
 
-function notFound(): PageSeo {
+function notFound(initialData: Record<string, unknown> = {}): PageSeo {
   return {
     status: 404,
     title: pageTitle("Page not found"),
@@ -249,6 +255,7 @@ function notFound(): PageSeo {
     image: DEFAULT_IMAGE,
     ogType: "website",
     jsonLd: [],
+    initialData,
     summary: `<h1>Page not found</h1><p>${link("/", "Go to the home page")} or ${link("/products", "browse all products")}.</p>`,
   };
 }
@@ -257,7 +264,10 @@ function notFound(): PageSeo {
 export async function seoForPath(env: SeoEnv, pathname: string, base: string): Promise<PageSeo | null> {
   const path = pathname.replace(/\/+$/, "") || "/";
   if (path === "/admin" || path.startsWith("/admin/")) return null;
-  if (path === "/") return home(base, await getTree(env.DB));
+  if (path === "/") {
+    const [tree, brands] = await Promise.all([getTree(env.DB), getBrands(env.DB)]);
+    return home(base, tree, brands);
+  }
   if (path === "/products") return productsIndex(base, await getTree(env.DB));
   if (path.startsWith("/products/")) {
     let rest: string;
@@ -266,9 +276,12 @@ export async function seoForPath(env: SeoEnv, pathname: string, base: string): P
     } catch {
       return notFound();
     }
+    // Same key and path cleanup as the app (src/lib/content/hooks.ts, src/pages/NodePage.tsx).
+    const key = `node:${rest.replace(/^\/+|\/+$/g, "")}`;
     const node = await getNode(env.DB, rest);
-    if (node?.kind === "category") return category(base, node);
-    if (node?.kind === "product") return product(base, node);
+    if (node?.kind === "category") return category(base, node, key);
+    if (node?.kind === "product") return product(base, node, key);
+    return notFound({ [key]: null });
   }
   return notFound();
 }

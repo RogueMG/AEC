@@ -39,9 +39,12 @@ export default function RichTextEditor({ id, describedBy, value, onChange }: Pro
     onUpdate: ({ editor }) => onChange(editor.isEmpty ? "" : editor.getHTML()),
   });
 
-  // Loading a different product replaces the content.
+  // Loading a different product replaces the content. In the production build React can re-run this
+  // effect (when a loading boundary re-shows the form) after Tiptap has destroyed the old editor and
+  // before it makes a new one; reading a destroyed editor throws, so wait for the new one.
   useEffect(() => {
-    if (editor && value !== (editor.isEmpty ? "" : editor.getHTML())) {
+    if (!editor || editor.isDestroyed) return;
+    if (value !== (editor.isEmpty ? "" : editor.getHTML())) {
       editor.commands.setContent(value, { emitUpdate: false });
     }
   }, [editor, value]);

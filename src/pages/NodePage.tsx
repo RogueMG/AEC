@@ -16,7 +16,8 @@ function NodePage() {
   if (result.status === "loading") {
     return (
       <div className="pt-(--spacing-header)">
-        <Loading className="h-[30rem]" label="Loading" />
+        {/* At least a screen tall, so the footer isn't shown and then pushed down when the page arrives. */}
+        <Loading className="h-[max(30rem,calc(100svh-var(--spacing-header)))]" label="Loading" />
       </div>
     );
   }

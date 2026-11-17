@@ -6,11 +6,8 @@ import { defineConfig } from 'vite'
 const API = 'http://127.0.0.1:8788'
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // GitHub Pages (the plain production build) serves from /AEC/; Cloudflare and local dev
-  // serve from the root.
-  base: mode === 'production' ? '/AEC/' : '/',
   // Local dev: the API and uploaded images come from the local Cloudflare server (npm run dev:full).
   server: {
     proxy: {
@@ -28,4 +25,4 @@ export default defineConfig(({ mode }) => ({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-}))
+})

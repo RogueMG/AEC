@@ -105,9 +105,11 @@ function Hero() {
             Industrial products for <span className="whitespace-nowrap">real-world</span> work
           </motion.h1>
 
+          {/* Slides up without fading in: this paragraph is the page's largest text, and browsers only
+              count it as shown once it's visible, so a fade from invisible would delay that. */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ y: 16 }}
+            animate={{ y: 0 }}
             transition={{ duration: duration.base, ease: ease.out, delay: COPY_DELAY + 0.25 }}
           >
             <p className="type-lead measure mt-6 text-steel">

@@ -1,5 +1,5 @@
 // Checks what search engines and link previews see, against a local server running the built site
-// (npm run build:cf, then npm run dev:api). Usage: node scripts/test-seo.mjs [baseUrl] [siteUrlBase]
+// (npm run build:local, then npm run dev:api). Usage: node scripts/test-seo.mjs [baseUrl] [siteUrlBase]
 // The second URL, if given, must be a server started with --binding SITE_URL=https://aec.example
 // (and a different --port/--inspector-port); it proves canonical links follow SITE_URL.
 // A temporary category with a hostile title is created to prove nothing can break out of the
@@ -129,6 +129,18 @@ try {
   assert.equal(query.canonical, `${base}/products/${firstCategory.path}`);
   ok("trailing slash and query strings point to the same canonical address");
 
+  console.log("Initial data (saves the app a request on first load)");
+  const initial = (p) => JSON.parse(p.html.split('<script type="application/json" id="aec-initial-data">')[1].split("</script>")[0]);
+  assert.deepEqual(Object.keys(initial(home)).sort(), ["brands", "tree"]);
+  assert.deepEqual(initial(home).tree, tree, "home: same tree as /api/tree");
+  assert.deepEqual(Object.keys(initial(index)), ["tree"]);
+  assert.deepEqual(initial(prod)[`node:${productLink.path}`], productNode, "product: same as /api/node");
+  assert.equal(initial(cat)[`node:${firstCategory.path}`].title, firstCategory.title);
+  assert.deepEqual(initial(slash), { [`node:${firstCategory.path}`]: initial(cat)[`node:${firstCategory.path}`] }, "trailing slash uses the app's key");
+  assert.deepEqual(initial(await page("/products/no-such-thing")), { "node:no-such-thing": null });
+  assert.deepEqual(initial(await page("/no-such-page")), {});
+  ok("each page carries exactly the data the app asks for first, keyed the same way");
+
   console.log("Admin, API, files");
   const admin = await fetch(`${base}/admin`);
   assert.equal(admin.headers.get("x-robots-tag"), "noindex, nofollow");
@@ -180,7 +192,10 @@ try {
   assert.ok(!/<\/script>[^<]*'single'/.test(evil.html.split('application/ld+json">')[1].split("</script>")[0]));
   // Checked in the raw HTML: page() decodes entities in the fields it extracts.
   assert.ok(evil.html.includes("Summary with &lt;b&gt;tags&lt;/b&gt; &amp; &quot;quotes&quot;"), "summary text escaped");
-  ok("hostile category title and summary can't break the HTML or the JSON-LD");
+  const rawData = evil.html.split('<script type="application/json" id="aec-initial-data">')[1].split("</script>")[0];
+  assert.ok(!rawData.includes("<"), "no raw < inside the initial-data block");
+  assert.equal(JSON.parse(rawData)["node:zz-seo-test"].title, hostile, "initial data round-trips exactly");
+  ok("hostile category title and summary can't break the HTML, the JSON-LD or the initial data");
 
   if (siteUrlBase) {
     console.log("SITE_URL");

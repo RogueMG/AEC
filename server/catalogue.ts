@@ -48,7 +48,7 @@ type CardRow = {
 };
 
 // Uploaded files are served by /media/<key>; linked images are used as given.
-export function toImage(key: string | null, url: string | null, alt: string | null): ContentImage | null {
+function toImage(key: string | null, url: string | null, alt: string | null): ContentImage | null {
   if (key) return { src: `/media/${key}`, alt: alt ?? "" };
   if (url) return { src: url, alt: alt ?? "" };
   return null;

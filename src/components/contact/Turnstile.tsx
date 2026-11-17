@@ -44,24 +44,43 @@ export default function Turnstile({ onToken }: { onToken: (token: string | null)
 
   useEffect(() => {
     const siteKey = turnstileSiteKey;
-    if (!siteKey || !container.current) return;
+    const element = container.current;
+    if (!siteKey || !element) return;
     let widgetId: string | null = null;
     let cancelled = false;
-    loadTurnstile()
-      .then((api) => {
-        if (cancelled || !container.current) return;
-        widgetId = api.render(container.current, {
-          sitekey: siteKey,
-          appearance: "interaction-only",
-          theme: "dark",
-          callback: (token: string) => callback.current(token),
-          "expired-callback": () => callback.current(null),
-          "error-callback": () => callback.current(null),
-        });
-      })
-      .catch(() => callback.current(null));
+    const start = () =>
+      loadTurnstile()
+        .then((api) => {
+          if (cancelled || !container.current) return;
+          widgetId = api.render(container.current, {
+            sitekey: siteKey,
+            appearance: "interaction-only",
+            theme: "dark",
+            callback: (token: string) => callback.current(token),
+            "expired-callback": () => callback.current(null),
+            "error-callback": () => callback.current(null),
+          });
+        })
+        .catch(() => callback.current(null));
+
+    // Only fetch Cloudflare's script once the form is about a screen away, so visitors who never
+    // scroll down to it don't download it.
+    let observer: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver === "undefined") void start();
+    else {
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((e) => e.isIntersecting)) return;
+          observer?.disconnect();
+          void start();
+        },
+        { rootMargin: "100% 0px" },
+      );
+      observer.observe(element);
+    }
     return () => {
       cancelled = true;
+      observer?.disconnect();
       if (widgetId && window.turnstile) window.turnstile.remove(widgetId);
     };
   }, []);

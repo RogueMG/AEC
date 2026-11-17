@@ -1,7 +1,8 @@
 # Asiatic Engineering Co. website
 
-Catalogue site for Asiatic Engineering Co., Chennai. React + Vite + Tailwind v4, deployed to GitHub
-Pages from `main` at https://roguemg.github.io/AEC/.
+Catalogue site for Asiatic Engineering Co., Chennai. React + Vite + Tailwind v4 on Cloudflare Pages,
+with Pages Functions, a D1 database and R2 image storage. (The older version on `main` is still
+served by GitHub Pages at https://roguemg.github.io/AEC/ until the Cloudflare site goes live.)
 
 ## Pages
 
@@ -78,7 +79,7 @@ being viewed, and location cards whose Google map only loads when the visitor cl
 
 | Setting | Where | Value |
 | --- | --- | --- |
-| `VITE_TURNSTILE_SITE_KEY` | Build-time variable (public). Locally: `.env.development.local` and `.env.cloudflare.local` (see `.env.example`). Production: a **build** environment variable on the Cloudflare Pages project | The widget's site key |
+| `VITE_TURNSTILE_SITE_KEY` | Build-time variable (public). Locally: `.env.development.local` and `.env.localtest.local` (see `.env.example`). Production: a **build** environment variable on the Cloudflare Pages project | The widget's site key |
 | `TURNSTILE_SECRET` | Server secret. Locally: `.dev.vars`. Production: a Pages **secret** | The widget's secret key |
 | `ENQUIRY_SALT` | Pages secret (optional locally) | Any long random string, for hashing visitor IPs |
 
@@ -128,12 +129,31 @@ Every address in these comes from the **`SITE_URL`** setting (e.g. `https://asia
 no trailing slash), or the address the request came in on when it isn't set. Changing it to the
 custom domain later switches canonicals, previews and the sitemap in one go.
 
+### First load
+
+On catalogue pages the server also puts the data the page needs straight away (the category list,
+brands, or the category/product) into the HTML as `<script type="application/json" id="aec-initial-data">`,
+keyed like the app's request cache. `src/lib/content/store.ts` reads it once, so the first page
+draws without waiting for an API call; moving between pages fetches as usual.
+
 ### Images
 
 The site's own photos in `public/images/` are WebP, each with smaller copies (`-640w`, `-800w`,
 `-1200w`) listed in `src/lib/imageVariants.ts`, so phones download a copy that fits the screen.
 Logos shown on the page use 96px copies (`logo-mark-96.webp`, `logo-mark-white-96.webp`); the 512px
 PNG stays for search engines. When replacing a photo, add its copies and its width there too.
+
+## Security and caching
+
+`functions/_middleware.ts` adds security headers to every response: a Content Security Policy that
+only allows the site itself plus Cloudflare Turnstile and the Google Maps embed (images may come from
+any https address, because product photos can be linked by URL), HSTS (on https),
+`X-Content-Type-Options`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy` and
+`Cross-Origin-Opener-Policy`. If you add another outside service (analytics, a chat widget, fonts from
+a CDN), add its address to the policy there or the browser will block it.
+
+`public/_headers` sets caching for static files: built JS/CSS/fonts in `/assets` for a year (their
+names change with every build), photos and the favicon for a day.
 
 ## Scripts
 
@@ -142,9 +162,9 @@ PNG stays for search engines. When replacing a photo, add its copies and its wid
 | `npm run dev:full` | **Day-to-day development:** site with instant reload at http://localhost:5173 plus the local Cloudflare server for `/api` and `/media` |
 | `npm run dev` | Site dev server only (needs `npm run dev:api` running for content) |
 | `npm run dev:api` | Local Cloudflare server only, at http://127.0.0.1:8788 |
-| `npm run build` | Production build into `dist/`, including the `404.html` fallback for deep links |
+| `npm run build` | **Production build** for Cloudflare Pages into `dist/`. Uses no local key files: the real Turnstile site key comes from the Pages build settings |
 | `npm run lint` | ESLint |
-| `npm run build:cf` | Production build for Cloudflare Pages (served from `/`) |
+| `npm run build:local` | The same build for testing on your computer, with the Turnstile test key from `.env.localtest.local` |
 | `npm run dev:cf` | Builds and runs the site locally the way Cloudflare runs it, at http://127.0.0.1:8788, with the local database (`DB`) and image storage (`MEDIA`) |
 | `npm run db:migrate:local` | Applies `migrations/` to the local D1 database |
 | `npm run db:seed:local` | Loads the starter catalogue into the local database (safe to re-run; never overwrites) |
@@ -152,7 +172,7 @@ PNG stays for search engines. When replacing a photo, add its copies and its wid
 | `npm run test:admin` | End-to-end admin API checks against a running `npm run dev:api` (cleans up after itself) |
 | `npm run test:enquiries` | End-to-end enquiry checks (validation, honeypot, rate limit, Turnstile, admin inbox) against a running `npm run dev:api`. Add a second URL for a server started with `--binding TURNSTILE_SECRET=2x0000000000000000000000000000000AA` to also test a failed bot check. Cleans up after itself |
 | `npm run test:enquiry-units` | Email notification and mailer message checks, with stand-in mailers and no network |
-| `npm run test:seo` | What search engines see on every page type, status codes, sitemap and robots, and escaping, against `npm run build:cf` + `npm run dev:api`. Add a second URL for a server started with `--binding SITE_URL=https://aec.example` to check the address switch. Cleans up after itself |
+| `npm run test:seo` | What search engines see on every page type, status codes, sitemap and robots, and escaping, against `npm run build:local` + `npm run dev:api`. Add a second URL for a server started with `--binding SITE_URL=https://aec.example` to check the address switch. Cleans up after itself |
 
 ## Design system
 

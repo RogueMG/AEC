@@ -26,7 +26,7 @@ function field(value: unknown, label: string, max: number, required = false): st
   return text;
 }
 
-export function parseEnquiry(input: EnquiryInput) {
+function parseEnquiry(input: EnquiryInput) {
   if (!input || typeof input !== "object") throw new AdminInputError("Invalid request");
   const enquiry = {
     name: field(input.name, "Name", 120, true),

@@ -3,6 +3,7 @@ import { ImagePlus, Link2, Loader2 } from "lucide-react";
 import { adminApi } from "@/admin/api";
 import { resizeToWebp } from "@/admin/resizeImage";
 import type { AdminImage } from "@/lib/admin/types";
+import { thumbnailFor } from "@/lib/images";
 import { cn } from "@/lib/utils";
 import { RowControls } from "./fields";
 import { iconButton, inputClass, moveItem } from "./styles";
@@ -141,7 +142,7 @@ export function SingleImage({ label, value, onChange, error }: SingleImageProps)
       <div className="mt-2">
         {value ? (
           <div className="flex flex-col gap-3 border border-line bg-surface p-3 sm:flex-row">
-            <img src={value.src} alt="" className="size-24 shrink-0 bg-paper object-cover" />
+            <img src={thumbnailFor(value.src)} alt="" decoding="async" className="size-24 shrink-0 bg-paper object-cover" />
             <AltInput image={value} label={label} onChange={(alt) => onChange({ ...value, alt })} />
             <button type="button" className="type-label self-start text-coral hover:underline" onClick={() => onChange(null)}>
               Remove
@@ -171,7 +172,7 @@ export function ImageGallery({ values, onChange, error }: GalleryProps) {
         {values.map((image, i) => (
           <li key={`${image.src}-${i}`} className="flex flex-col gap-3 border border-line bg-surface p-3 sm:flex-row">
             <div className="relative shrink-0">
-              <img src={image.src} alt="" className="size-24 bg-paper object-cover" />
+              <img src={thumbnailFor(image.src)} alt="" decoding="async" className="size-24 bg-paper object-cover" />
               {i === 0 && <span className="type-label absolute top-1 left-1 bg-ink px-1.5 py-0.5 text-[0.6875rem] text-surface">Main</span>}
             </div>
             <AltInput image={image} label={`image ${i + 1}`} onChange={(alt) => onChange(values.map((v, j) => (j === i ? { ...v, alt } : v)))} />

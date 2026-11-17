@@ -20,7 +20,10 @@ function SiteLayout() {
         <Outlet />
       </main>
       <Footer />
-      <WhatsAppButton />
+      {/* A labelled region, so screen-reader users can find it among the page's landmarks. */}
+      <aside aria-label="Chat on WhatsApp">
+        <WhatsAppButton />
+      </aside>
     </MotionConfig>
   );
 }

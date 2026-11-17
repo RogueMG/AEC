@@ -3,17 +3,16 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import { Loading } from "./components/content/ContentState";
 import SiteLayout from "./components/layout/SiteLayout";
 import Home from "./pages/Home";
+import NodePage from "./pages/NodePage";
 import NotFound from "./pages/NotFound";
+import ProductsIndex from "./pages/ProductsIndex";
 
-// Product pages load on demand so the home page bundle stays small.
-const ProductsIndex = lazy(() => import("./pages/ProductsIndex"));
-const NodePage = lazy(() => import("./pages/NodePage"));
 // The admin is only downloaded by people who open it.
 const AdminApp = lazy(() => import("./admin/AdminApp"));
 
 const pageFallback = (
   <div className="pt-(--spacing-header)">
-    <Loading className="h-[30rem]" label="Loading page" />
+    <Loading className="h-[max(30rem,calc(100svh-var(--spacing-header)))]" label="Loading page" />
   </div>
 );
 

@@ -39,7 +39,7 @@ const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const UPLOAD_KEY = /^uploads\/[0-9a-f-]{36}\.(webp|jpg|png|avif)$/;
 const LIMITS = { title: 120, slug: 80, summary: 400, alt: 200, description: 20000, listItem: 200, list: 40 };
 
-export function slugify(text: string): string {
+function slugify(text: string): string {
   return text
     .toLowerCase()
     .normalize("NFKD")

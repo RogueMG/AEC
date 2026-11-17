@@ -40,7 +40,43 @@ function headTags(seo: PageSeo, base: string): string {
     .join("\n    ");
 }
 
-export const onRequest: PagesFunction<SeoEnv> = async ({ request, env, next }) => {
+// Only these outside services are allowed: Cloudflare Turnstile (the enquiry form's bot check) and
+// the Google Maps embed. Images may come from any https address because the admin can link
+// product photos by URL; "blob:" covers the admin's upload previews.
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' https://challenges.cloudflare.com",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self'",
+  "connect-src 'self'",
+  "frame-src https://challenges.cloudflare.com https://maps.google.com https://www.google.com",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join("; ");
+
+/** Security headers for every response (Functions responses don't get public/_headers). */
+function secure(response: Response, url: URL): Response {
+  // WebSocket upgrades and the like can't be copied; leave them alone.
+  if (response.status === 101) return response;
+  const out = new Response(response.body, response);
+  const h = out.headers;
+  const https = url.protocol === "https:";
+  h.set("Content-Security-Policy", https ? `${CSP}; upgrade-insecure-requests` : CSP);
+  if (https) h.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  h.set("X-Content-Type-Options", "nosniff");
+  h.set("X-Frame-Options", "DENY");
+  h.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  h.set("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(), usb=()");
+  h.set("Cross-Origin-Opener-Policy", "same-origin");
+  return out;
+}
+
+export const onRequest: PagesFunction<SeoEnv> = async (context) => secure(await handle(context), new URL(context.request.url));
+
+async function handle({ request, env, next }: EventContext<SeoEnv, string, unknown>): Promise<Response> {
   const url = new URL(request.url);
   if (!isPage(request, url)) return next();
 
@@ -77,7 +113,14 @@ export const onRequest: PagesFunction<SeoEnv> = async ({ request, env, next }) =
     .on("title", { element: (el) => void el.setInnerContent(seo.title) })
     .on('meta[name="description"]', { element: (el) => void el.setAttribute("content", seo.description) })
     .on("head", { element: (el) => void el.append(`    ${headTags(seo, base)}\n  `, { html: true }) })
+    .on("body", {
+      element: (el) => {
+        // Read once by src/lib/content/store.ts. "<" is escaped so the data can't close the tag.
+        const data = JSON.stringify(seo.initialData).replace(/</g, "\\u003c");
+        el.prepend(`<script type="application/json" id="aec-initial-data">${data}</script>`, { html: true });
+      },
+    })
     .on("div#root", { element: (el) => void el.setInnerContent(`<div class="seo-summary">${seo.summary}</div>`, { html: true }) })
     .transform(new Response(response.body, { status: seo.status, headers }));
   return rewritten;
-};
+}
