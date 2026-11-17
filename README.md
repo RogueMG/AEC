@@ -24,6 +24,17 @@ served by Pages Functions:
 | `GET /api/brands` | All brands in display order |
 | `GET /media/<key>` | An uploaded image from R2 |
 
+### Admin API
+
+`/api/admin/*` creates, edits, moves, reorders and deletes categories, products and brands, and
+uploads images to R2 (`/api/admin/upload`). Every request must carry a valid Cloudflare Access
+sign-in token, verified in `server/auth.ts`; changes must also send the `X-AEC-Admin: 1` header.
+Product descriptions are cleaned to safe HTML on save (`server/sanitize.ts`), and uploads that
+nothing uses any more are deleted from R2.
+
+For local development, copy `.dev.vars.example` to `.dev.vars`. It skips the Access check for
+requests to localhost only.
+
 Server code is in `functions/` (routes) and `server/` (shared logic); response types are in
 `src/lib/content/types.ts`. The starter catalogue in `src/data/catalogue.ts` seeds the database.
 
@@ -40,6 +51,8 @@ Server code is in `functions/` (routes) and `server/` (shared logic); response t
 | `npm run dev:cf` | Builds and runs the site locally the way Cloudflare runs it, at http://127.0.0.1:8788, with the local database (`DB`) and image storage (`MEDIA`) |
 | `npm run db:migrate:local` | Applies `migrations/` to the local D1 database |
 | `npm run db:seed:local` | Loads the starter catalogue into the local database (safe to re-run; never overwrites) |
+| `npm run test:auth` | Checks sign-in token verification (signs test tokens with a throwaway key) |
+| `npm run test:admin` | End-to-end admin API checks against a running `npm run dev:api` (cleans up after itself) |
 
 ## Design system
 

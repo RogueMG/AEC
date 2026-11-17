@@ -13,7 +13,9 @@
     "db:migrate:local": "wrangler d1 migrations apply aec-db --local",
     "db:seed:local": "node scripts/seed-sql.ts && wrangler d1 execute aec-db --local --file=seed/seed.sql",
     "dev:api": "wrangler pages dev --port 8788 --ip 127.0.0.1",
-    "dev:full": "npm run build:cf && concurrently -k -n api,site -c blue,green \"npm:dev:api\" \"vite\""
+    "dev:full": "npm run build:cf && concurrently -k -n api,site -c blue,green \"npm:dev:api\" \"vite\"",
+    "test:auth": "node scripts/test-auth.ts",
+    "test:admin": "node scripts/test-admin.mjs"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",
