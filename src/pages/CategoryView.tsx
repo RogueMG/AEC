@@ -108,6 +108,7 @@ function CategoryView({ category }: { category: CategoryNode }) {
         body="Tell us the product, the quantity and where it needs to go. We will reply with availability and a quote."
         subject={`Enquiry: ${category.title}`}
         message={`Hello, I'd like to enquire about ${category.title}.`}
+        interestPath={category.path}
       />
     </>
   );

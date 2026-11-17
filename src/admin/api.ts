@@ -11,6 +11,7 @@ import type {
   UploadResult,
 } from "@/lib/admin/types";
 import { clearResources } from "@/lib/content/store";
+import type { Enquiry, EnquiryList, EnquiryStatus } from "@/lib/enquiries/types";
 
 export class AdminApiError extends Error {
   readonly status: number;
@@ -70,6 +71,10 @@ export const adminApi = {
   updateBrand: (id: number, input: BrandInput) => request<AdminBrand>("PUT", `brands/${id}`, input),
   deleteBrand: (id: number) => request<void>("DELETE", `brands/${id}`),
   reorderBrands: (ids: number[]) => request<{ ok: true }>("POST", "brands/reorder", { parentId: null, ids }),
+
+  enquiries: (status: EnquiryStatus) => request<EnquiryList>("GET", `enquiries?status=${status}`),
+  setEnquiryStatus: (id: number, status: EnquiryStatus) => request<Enquiry>("PUT", `enquiries/${id}`, { status }),
+  deleteEnquiry: (id: number) => request<void>("DELETE", `enquiries/${id}`),
 
   upload: (file: Blob, name: string) => {
     const form = new FormData();

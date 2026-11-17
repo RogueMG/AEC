@@ -15,7 +15,9 @@
     "dev:api": "wrangler pages dev --port 8788 --ip 127.0.0.1",
     "dev:full": "npm run build:cf && concurrently -k -n api,site -c blue,green \"npm:dev:api\" \"vite\"",
     "test:auth": "node scripts/test-auth.ts",
-    "test:admin": "node scripts/test-admin.mjs"
+    "test:admin": "node scripts/test-admin.mjs",
+    "test:enquiries": "node scripts/test-enquiries.mjs",
+    "test:enquiry-units": "node scripts/test-enquiry-units.ts"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",

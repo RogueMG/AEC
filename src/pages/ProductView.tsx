@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Mail, MessageCircle } from "lucide-react";
+import { Mail, MessageCircle, Send } from "lucide-react";
 import Breadcrumbs from "@/components/content/Breadcrumbs";
 import Gallery from "@/components/content/Gallery";
 import ProductCard from "@/components/content/ProductCard";
@@ -7,7 +7,7 @@ import RichText from "@/components/content/RichText";
 import { tones } from "@/components/content/tones";
 import { Button } from "@/components/ui/button";
 import type { ProductNode } from "@/lib/content/types";
-import { emailHref, whatsappHref } from "@/lib/enquiry";
+import { emailHref, enquiryFormHref, whatsappHref } from "@/lib/enquiry";
 import { cn } from "@/lib/utils";
 
 function ProductView({ product }: { product: ProductNode }) {
@@ -77,6 +77,12 @@ function ProductView({ product }: { product: ProductNode }) {
                     <Mail aria-hidden />
                     Email us
                   </a>
+                </Button>
+                <Button asChild variant="outline-on-light">
+                  <Link to={enquiryFormHref(product.path)}>
+                    <Send aria-hidden />
+                    Send an enquiry
+                  </Link>
                 </Button>
               </div>
 

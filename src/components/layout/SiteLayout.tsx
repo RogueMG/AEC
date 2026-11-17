@@ -3,6 +3,7 @@ import { Outlet } from "react-router";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import ScrollManager from "@/components/layout/ScrollManager";
+import WhatsAppButton from "@/components/layout/WhatsAppButton";
 
 function SiteLayout() {
   return (
@@ -19,6 +20,7 @@ function SiteLayout() {
         <Outlet />
       </main>
       <Footer />
+      <WhatsAppButton />
     </MotionConfig>
   );
 }

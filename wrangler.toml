@@ -15,3 +15,10 @@ migrations_dir = "migrations"
 [[r2_buckets]]
 binding = "MEDIA"
 bucket_name = "aec-media"
+
+# Enquiry email notifications go through the separate mailer Worker (workers/mailer), because
+# Pages Functions can't use the send_email binding. Uncomment once that Worker is deployed and
+# Email Routing is set up on the custom domain; until then enquiries are stored only.
+# [[services]]
+# binding = "MAILER"
+# service = "aec-mailer"

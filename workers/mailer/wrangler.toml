@@ -1,0 +1,14 @@
+# Enquiry notification mailer. Deployed separately from the Pages site:
+#   npx wrangler deploy --config workers/mailer/wrangler.toml
+# Needs the custom domain on Cloudflare with Email Routing enabled and MAIL_TO verified as a
+# destination address. MAIL_FROM and MAIL_TO are set in the dashboard (or with
+# `wrangler secret put`), never committed.
+name = "aec-mailer"
+main = "src/index.ts"
+compatibility_date = "2026-11-01"
+# No public URL: only the site can reach it, through its MAILER service binding.
+workers_dev = false
+preview_urls = false
+
+[[send_email]]
+name = "SEND"

@@ -23,6 +23,8 @@ export type Location = {
   place: string;
   address: string;
   mapsHref: string;
+  // What the embedded map searches for, when the full address is too detailed for Google to place.
+  mapQuery?: string;
 };
 
 export const locations: Location[] = [
@@ -42,6 +44,7 @@ export const locations: Location[] = [
       "No. 297, Nehru Nagar, Chinna Vallarapuram, near Thandalam–Perambakkam–Thakkolam Road, Manur Village, Sriperumbudur, Tamil Nadu 602105",
     mapsHref:
       "https://www.google.com/maps/search/?api=1&query=Manur+Village+Sriperumbudur+Tamil+Nadu+602105",
+    mapQuery: "Manur Village, Sriperumbudur, Tamil Nadu 602105",
   },
 ];
 

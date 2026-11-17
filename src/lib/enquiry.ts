@@ -6,6 +6,11 @@ export function whatsappHref(message: string): string {
   return `${contact.whatsapp.href}?text=${encodeURIComponent(message)}`;
 }
 
+// The home-page enquiry form with a product or category (its /products path) already chosen.
+export function enquiryFormHref(interestPath: string): string {
+  return `/?${new URLSearchParams({ interest: interestPath })}#contact`;
+}
+
 export function emailHref(subject: string, body?: string): string {
   const params = new URLSearchParams({ subject });
   if (body) params.set("body", body);
