@@ -1,7 +1,6 @@
 import { Loading } from "@/components/content/ContentState";
 import { countWord, dealerBrands } from "@/lib/content/brands";
 import { useBrands } from "@/lib/content/hooks";
-import { imageUrl } from "@/lib/content/image";
 
 function Brands() {
   const brands = useBrands();
@@ -30,7 +29,7 @@ function Brands() {
               >
                 {brand.logo ? (
                   <img
-                    src={imageUrl(brand.logo, 320)}
+                    src={brand.logo.src}
                     alt={brand.name}
                     className="max-h-10 w-auto"
                     loading="lazy"

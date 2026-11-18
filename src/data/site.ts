@@ -23,6 +23,10 @@ export type Location = {
   place: string;
   address: string;
   mapsHref: string;
+  // What the embedded map searches for, when the full address is too detailed for Google to place.
+  mapQuery?: string;
+  // The same address split up for search engines (structured data).
+  postal: { street: string; locality: string; region: string; postalCode: string };
 };
 
 export const locations: Location[] = [
@@ -33,6 +37,7 @@ export const locations: Location[] = [
     address: "33 Sembudoss Street, Broadway, Chennai, Tamil Nadu 600001",
     mapsHref:
       "https://www.google.com/maps/search/?api=1&query=33+Sembudoss+Street+Broadway+Chennai+600001",
+    postal: { street: "33 Sembudoss Street, Broadway", locality: "Chennai", region: "Tamil Nadu", postalCode: "600001" },
   },
   {
     id: "factory",
@@ -42,6 +47,13 @@ export const locations: Location[] = [
       "No. 297, Nehru Nagar, Chinna Vallarapuram, near Thandalam–Perambakkam–Thakkolam Road, Manur Village, Sriperumbudur, Tamil Nadu 602105",
     mapsHref:
       "https://www.google.com/maps/search/?api=1&query=Manur+Village+Sriperumbudur+Tamil+Nadu+602105",
+    mapQuery: "Manur Village, Sriperumbudur, Tamil Nadu 602105",
+    postal: {
+      street: "No. 297, Nehru Nagar, Chinna Vallarapuram, near Thandalam–Perambakkam–Thakkolam Road, Manur Village",
+      locality: "Sriperumbudur",
+      region: "Tamil Nadu",
+      postalCode: "602105",
+    },
   },
 ];
 

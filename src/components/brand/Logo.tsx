@@ -5,7 +5,7 @@ type LogoProps = { tone?: "light" | "dark"; className?: string };
 
 // tone="light" is the white mark for ink surfaces; "dark" is the ink mark for light ones.
 function Logo({ tone = "light", className }: LogoProps) {
-  const src = tone === "light" ? "images/logo-mark-white.png" : "images/logo-mark.png";
+  const src = tone === "light" ? "images/logo-mark-white-96.webp" : "images/logo-mark-96.webp";
   return (
     <span className={cn("inline-flex items-center gap-3", className)}>
       <img src={publicAsset(src)} alt="" width={44} height={44} className="size-11" />

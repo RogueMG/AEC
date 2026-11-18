@@ -1,10 +1,18 @@
-import { Mail, MessageCircle } from "lucide-react";
+import { Link } from "react-router";
+import { Mail, MessageCircle, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { emailHref, whatsappHref } from "@/lib/enquiry";
+import { emailHref, enquiryFormHref, whatsappHref } from "@/lib/enquiry";
 
-type EnquiryBandProps = { title: string; body: string; subject: string; message: string };
+type EnquiryBandProps = {
+  title: string;
+  body: string;
+  subject: string;
+  message: string;
+  // A /products path: adds a "Send an enquiry" button that opens the form with it chosen.
+  interestPath?: string;
+};
 
-function EnquiryBand({ title, body, subject, message }: EnquiryBandProps) {
+function EnquiryBand({ title, body, subject, message, interestPath }: EnquiryBandProps) {
   return (
     <section className="bg-ink text-surface">
       <div className="page flex flex-col gap-8 py-14 lg:flex-row lg:items-center lg:justify-between">
@@ -25,6 +33,14 @@ function EnquiryBand({ title, body, subject, message }: EnquiryBandProps) {
               Email us
             </a>
           </Button>
+          {interestPath && (
+            <Button asChild variant="outline-on-ink">
+              <Link to={enquiryFormHref(interestPath)}>
+                <Send aria-hidden />
+                Send an enquiry
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
     </section>

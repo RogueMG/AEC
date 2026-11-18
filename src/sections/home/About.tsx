@@ -3,6 +3,7 @@ import { company, locations } from "@/data/site";
 import { dealerBrands, leadBrands, countWord } from "@/lib/content/brands";
 import { useBrands } from "@/lib/content/hooks";
 import type { Brand } from "@/lib/content/types";
+import { sizes, srcSetFor } from "@/lib/images";
 import { publicAsset } from "@/lib/publicAsset";
 
 function dealerReason(dealers: Brand[]) {
@@ -37,7 +38,7 @@ function RatingPlate() {
     <div className="relative bg-signal p-2 text-ink">
       <div className="border-2 border-ink px-6 pt-6 pb-2 sm:px-8">
         <div className="flex items-center gap-3 border-b-2 border-ink pb-5">
-          <img src={publicAsset("images/logo-mark.png")} alt="" className="size-10" />
+          <img src={publicAsset("images/logo-mark-96.webp")} alt="" width={40} height={40} loading="lazy" className="size-10" />
           <p className="type-subhead">{company.name}</p>
         </div>
         <dl>
@@ -89,9 +90,14 @@ function About() {
         <div className="relative lg:pt-2">
           <div className="cut mr-20 ml-10 h-56 origin-bottom-left overflow-hidden sm:h-64">
             <img
-              src={publicAsset("images/about-floor.jpg")}
+              src={publicAsset("images/about-floor.webp")}
+              srcSet={srcSetFor("images/about-floor.webp")}
+              sizes={sizes.aboutPhoto}
               alt="Workers at an assembly line on a factory floor"
+              width={1200}
+              height={1798}
               loading="lazy"
+              decoding="async"
               className="cut-inverse absolute inset-y-0 -left-20 h-full w-[calc(100%+10rem)] max-w-none object-cover"
             />
           </div>

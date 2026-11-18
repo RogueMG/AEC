@@ -1,24 +1,17 @@
-import { cmsEnabled } from "./config";
-import { localBrands, localCategories, localCategory, localProduct } from "./local";
-import { fetchBrands, fetchCategories, fetchCategory, fetchProduct } from "./sanity";
+import { fetchBrands, fetchNode, fetchTree } from "./api";
 import { useResource } from "./store";
 
-export function useCategories() {
-  return useResource("categories", cmsEnabled ? fetchCategories : localCategories);
+// The only place pages get catalogue content from.
+
+export function useTree() {
+  return useResource("tree", fetchTree);
 }
 
-export function useCategory(slug: string) {
-  return useResource(`category:${slug}`, () =>
-    cmsEnabled ? fetchCategory(slug) : localCategory(slug),
-  );
-}
-
-export function useProduct(categorySlug: string, slug: string) {
-  return useResource(`product:${categorySlug}/${slug}`, () =>
-    cmsEnabled ? fetchProduct(categorySlug, slug) : localProduct(categorySlug, slug),
-  );
+/** A category or product by its path under /products, e.g. "safety-ppe/gloves". */
+export function useNode(path: string) {
+  return useResource(`node:${path}`, () => fetchNode(path));
 }
 
 export function useBrands() {
-  return useResource("brands", cmsEnabled ? fetchBrands : localBrands);
+  return useResource("brands", fetchBrands);
 }

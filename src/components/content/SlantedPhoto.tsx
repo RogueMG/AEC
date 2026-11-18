@@ -8,8 +8,8 @@ import {
   useReducedMotion,
   useTransform,
 } from "motion/react";
-import { imageSrcSet, imageUrl } from "@/lib/content/image";
 import type { ContentImage } from "@/lib/content/types";
+import { sizes as imageSizes, srcSetFor } from "@/lib/images";
 import { duration, ease } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
@@ -28,10 +28,10 @@ type SlantedPhotoProps = {
   columnStagger?: number;
   /** Reveal on first scroll into view, or straight away on mount. */
   revealOn?: "view" | "mount";
-  widths?: number[];
-  sizes?: string;
   className?: string;
   loading?: "lazy" | "eager";
+  /** How wide the photo shows, so the browser can pick a smaller copy (src/lib/images.ts). */
+  sizes?: string;
 };
 
 // A full-bleed photo with one edge on the site's cut angle. The tile colour wipes off it
@@ -45,10 +45,9 @@ function SlantedPhoto({
   delay = 0,
   columnStagger = 0,
   revealOn = "view",
-  widths = [480, 800, 1200],
-  sizes = "100vw",
   className,
   loading = "lazy",
+  sizes = imageSizes.tile,
 }: SlantedPhotoProps) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
@@ -92,11 +91,13 @@ function SlantedPhoto({
     <div ref={ref} className={cn("relative", className)}>
       <motion.div className="absolute inset-0 overflow-hidden" style={{ clipPath }}>
         <motion.img
-          src={imageUrl(image, widths[widths.length - 1])}
-          srcSet={imageSrcSet(image, widths)}
-          sizes={sizes}
+          src={image.src}
           alt={image.alt}
+          srcSet={srcSetFor(image.src)}
+          sizes={sizes}
           loading={loading}
+          fetchPriority={loading === "eager" ? "high" : undefined}
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
           animate={{ scale: lifted ? 1.05 : 1 }}
           transition={{ duration: duration.slow, ease: ease.out }}

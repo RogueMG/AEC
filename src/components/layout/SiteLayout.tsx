@@ -3,6 +3,7 @@ import { Outlet } from "react-router";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import ScrollManager from "@/components/layout/ScrollManager";
+import WhatsAppButton from "@/components/layout/WhatsAppButton";
 
 function SiteLayout() {
   return (
@@ -19,6 +20,10 @@ function SiteLayout() {
         <Outlet />
       </main>
       <Footer />
+      {/* A labelled region, so screen-reader users can find it among the page's landmarks. */}
+      <aside aria-label="Chat on WhatsApp">
+        <WhatsAppButton />
+      </aside>
     </MotionConfig>
   );
 }

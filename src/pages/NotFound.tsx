@@ -2,15 +2,15 @@ import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { usePageMeta } from "@/hooks/usePageMeta";
 
-function NotFound({ what = "page" }: { what?: "page" | "product" | "category" }) {
+function NotFound() {
   usePageMeta("Page not found");
 
   return (
     <section className="bg-surface pt-(--spacing-header)">
       <div className="page section-y">
-        <h1 className="type-display">This {what} isn’t here</h1>
+        <h1 className="type-display">This page isn’t here</h1>
         <p className="type-lead measure mt-6 text-steel">
-          The link may be old, or the {what} may have moved. Browse the product range, or go back to
+          The link may be old, or the page may have moved. Browse the product range, or go back to
           the home page.
         </p>
         <div className="mt-9 flex flex-wrap gap-3">

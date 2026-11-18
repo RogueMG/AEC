@@ -22,11 +22,12 @@ function Footer() {
         </nav>
       </div>
       <div className="border-t border-ink-line">
-        <div className="page type-small flex flex-col gap-2 py-5 text-ink-muted sm:flex-row sm:justify-between">
+        {/* Extra room at the bottom/right so the floating WhatsApp button never covers this text. */}
+        <div className="page type-small flex flex-col gap-2 pt-5 pb-24 text-ink-muted sm:flex-row sm:justify-between sm:pb-5">
           <p>
             © {new Date().getFullYear()} {company.name}
           </p>
-          <p>MSME Udyam registration {company.msmeUdyam}</p>
+          <p className="sm:mr-20">MSME Udyam registration {company.msmeUdyam}</p>
         </div>
       </div>
     </footer>

@@ -11,6 +11,22 @@ const entries = new Map<string, Resource<unknown>>();
 const listeners = new Set<() => void>();
 const LOADING: Resource<never> = { status: "loading" };
 
+// The server puts the data the first page needs into the HTML (functions/_middleware.ts), keyed
+// like this cache, so the page can draw without waiting for another request.
+function primeFromPage() {
+  if (typeof document === "undefined") return;
+  const element = document.getElementById("aec-initial-data");
+  if (!element) return;
+  try {
+    const data = JSON.parse(element.textContent ?? "{}") as Record<string, unknown>;
+    for (const [key, value] of Object.entries(data)) entries.set(key, { status: "ready", data: value });
+  } catch {
+    // Ignore: the app just fetches as usual.
+  }
+  element.remove();
+}
+primeFromPage();
+
 function subscribe(listener: () => void) {
   listeners.add(listener);
   return () => {
@@ -43,4 +59,10 @@ function ensure<T>(key: string, load: () => T | Promise<T>) {
 export function useResource<T>(key: string, load: () => T | Promise<T>): Resource<T> {
   ensure(key, load);
   return useSyncExternalStore(subscribe, () => (entries.get(key) ?? LOADING) as Resource<T>);
+}
+
+/** Forget every cached response, e.g. after an admin edit, so pages refetch fresh content. */
+export function clearResources(): void {
+  entries.clear();
+  listeners.forEach((listener) => listener());
 }

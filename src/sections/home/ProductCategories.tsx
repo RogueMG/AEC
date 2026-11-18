@@ -1,9 +1,9 @@
 import CategoryTiles from "@/components/content/CategoryTiles";
 import { Loading, LoadError } from "@/components/content/ContentState";
-import { useCategories } from "@/lib/content/hooks";
+import { useTree } from "@/lib/content/hooks";
 
 function ProductCategories() {
-  const categories = useCategories();
+  const categories = useTree();
 
   return (
     <section id="products" aria-labelledby="products-title">

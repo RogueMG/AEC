@@ -1,75 +1,70 @@
-import { ArrowUpRight, Mail, MessageCircle, Phone } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import type { ComponentType, SVGProps } from "react";
+import { Mail, MessageCircle, Phone, PhoneCall } from "lucide-react";
+import EnquiryForm from "@/components/contact/EnquiryForm";
+import MapCard from "@/components/contact/MapCard";
 import { contact, locations } from "@/data/site";
+
+type QuickContact = {
+  label: string;
+  value: string;
+  href: string;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  external?: boolean;
+};
+
+const quickContacts: QuickContact[] = [
+  { label: "Call", value: contact.mobile.label, href: contact.mobile.href, icon: Phone },
+  { label: "WhatsApp", value: contact.mobile.label, href: contact.whatsapp.href, icon: MessageCircle, external: true },
+  { label: "Email", value: contact.email.label, href: contact.email.href, icon: Mail },
+  { label: "Landline", value: contact.landline.label, href: contact.landline.href, icon: PhoneCall },
+];
 
 function Contact() {
   return (
     <section id="contact" className="section-y bg-ink text-surface">
-      <div className="page grid gap-x-16 gap-y-block lg:grid-cols-[1.15fr_1fr]">
-        <div>
+      <div className="page grid gap-x-16 gap-y-block lg:grid-cols-[1.25fr_1fr]">
+        <div className="min-w-0">
           <h2 className="type-title">Tell us what you need</h2>
           <p className="type-lead measure mt-6 text-ink-muted">
             Send a product list, a drawing or a part number. We will come back with availability
             and a quote.
           </p>
-
-          <div className="mt-9 flex flex-wrap gap-3">
-            <Button asChild>
-              <a href={contact.mobile.href}>
-                <Phone aria-hidden />
-                Call {contact.mobile.label}
-              </a>
-            </Button>
-            <Button asChild variant="outline-on-ink">
-              <a href={contact.whatsapp.href} target="_blank" rel="noreferrer">
-                <MessageCircle aria-hidden />
-                Chat on WhatsApp
-              </a>
-            </Button>
+          <div className="mt-9">
+            <EnquiryForm />
           </div>
-
-          <dl className="mt-block grid gap-x-12 gap-y-6 sm:grid-cols-2">
-            <div>
-              <dt className="type-label text-ink-muted">Email</dt>
-              <dd className="mt-1.5">
-                <a href={contact.email.href} className="link-rule inline-flex items-center gap-2">
-                  <Mail className="size-4" aria-hidden />
-                  {contact.email.label}
-                </a>
-              </dd>
-            </div>
-            <div>
-              <dt className="type-label text-ink-muted">Landline</dt>
-              <dd className="mt-1.5">
-                <a href={contact.landline.href} className="link-rule tabular-nums">
-                  {contact.landline.label}
-                </a>
-              </dd>
-            </div>
-          </dl>
         </div>
 
-        <ul className="grid content-start gap-px bg-ink-line">
-          {locations.map((location) => (
-            <li key={location.id} className="bg-ink-raised p-6 sm:p-8">
-              <h3 className="type-subhead">
-                {location.name}, {location.place}
-              </h3>
-              <address className="type-small mt-3 max-w-[26rem] text-ink-muted not-italic">
-                {location.address}
-              </address>
-              <a
-                href={location.mapsHref}
-                target="_blank"
-                rel="noreferrer"
-                className="type-label mt-5 inline-flex items-center gap-1.5 text-signal"
-              >
-                <span className="link-rule">Open in Google Maps</span>
-                <ArrowUpRight className="size-4" aria-hidden />
-              </a>
-            </li>
-          ))}
-        </ul>
+        <div className="min-w-0">
+          <h3 className="type-heading">Or reach us directly</h3>
+          <ul className="mt-6 grid gap-x-8 gap-y-5 sm:grid-cols-2">
+            {quickContacts.map(({ label, value, href, icon: Icon, external }) => (
+              <li key={label}>
+                <a
+                  href={href}
+                  {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
+                  className="group flex items-start gap-3"
+                >
+                  <Icon className="mt-0.5 size-5 shrink-0 text-teal" aria-hidden />
+                  <span className="min-w-0 flex-1">
+                    <span className="type-label block text-ink-muted">{label}</span>
+                    <span className="link-rule mt-1 block tabular-nums break-words group-hover:text-signal">
+                      {value}
+                    </span>
+                    {external && <span className="sr-only"> (opens in a new tab)</span>}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <ul className="mt-block grid gap-px bg-ink-line">
+            {locations.map((location) => (
+              <li key={location.id}>
+                <MapCard location={location} />
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

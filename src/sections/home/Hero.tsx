@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { countWord, dealerBrands, leadBrands } from "@/lib/content/brands";
 import { useBrands } from "@/lib/content/hooks";
 import { duration, ease } from "@/lib/motion";
+import { sizes, srcSetFor } from "@/lib/images";
 import { publicAsset } from "@/lib/publicAsset";
 import { cn } from "@/lib/utils";
 
@@ -35,8 +36,14 @@ function Bands({ className }: { className?: string }) {
         >
           {band.photo && (
             <img
-              src={publicAsset("images/hero-sparks.jpg")}
+              src={publicAsset("images/hero-sparks.webp")}
+              srcSet={srcSetFor("images/hero-sparks.webp")}
+              sizes={sizes.half}
               alt=""
+              width={1800}
+              height={1200}
+              fetchPriority="high"
+              decoding="async"
               className="cut-inverse absolute inset-y-0 -left-28 h-full w-[calc(100%+14rem)] max-w-none object-cover"
             />
           )}
@@ -98,9 +105,11 @@ function Hero() {
             Industrial products for <span className="whitespace-nowrap">real-world</span> work
           </motion.h1>
 
+          {/* Slides up without fading in: this paragraph is the page's largest text, and browsers only
+              count it as shown once it's visible, so a fade from invisible would delay that. */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ y: 16 }}
+            animate={{ y: 0 }}
             transition={{ duration: duration.base, ease: ease.out, delay: COPY_DELAY + 0.25 }}
           >
             <p className="type-lead measure mt-6 text-steel">

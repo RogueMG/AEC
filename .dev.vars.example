@@ -1,0 +1,8 @@
+# Copy to .dev.vars (git-ignored) for local development.
+# Skips the Cloudflare Access check for the admin API, but only for requests to localhost.
+# Never set this in the Cloudflare dashboard.
+ADMIN_DEV_BYPASS=1
+
+# Cloudflare Turnstile's official test secret: always passes. The real secret is added in the
+# Cloudflare dashboard (Settings > Variables and secrets), never committed.
+TURNSTILE_SECRET=1x0000000000000000000000000000000AA

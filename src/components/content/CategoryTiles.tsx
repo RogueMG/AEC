@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import SlantedPhoto from "@/components/content/SlantedPhoto";
 import { tones } from "@/components/content/tones";
-import type { Category } from "@/lib/content/types";
+import type { CategorySummary } from "@/lib/content/types";
 import { duration, ease } from "@/lib/motion";
 import { cutFor } from "@/lib/cut";
 import { cn } from "@/lib/utils";
@@ -15,16 +15,17 @@ const CUT = cutFor(PHOTO_HEIGHT);
 const CUT_LIFTED = 28;
 // Delay per column, so a row reveals left to right while stacked tiles on mobile don't wait.
 const COLUMN_STAGGER = 0.14;
-// Tiles list at most this many products before "and N more".
+// Tiles list at most this many sub-categories and products before "and N more".
 const LISTED = 4;
 
-function CategoryTile({ category, headingLevel }: { category: Category; headingLevel: "h2" | "h3" }) {
+function CategoryTile({ category, headingLevel }: { category: CategorySummary; headingLevel: "h2" | "h3" }) {
   const tone = tones[category.tone];
   const [lifted, setLifted] = useState(false);
   const Heading = headingLevel;
-  const href = `/products/${category.slug}`;
-  const listed = category.products.slice(0, LISTED);
-  const more = category.products.length - listed.length;
+  const href = `/products/${category.path}`;
+  const contents = [...category.subcategories, ...category.products];
+  const listed = contents.slice(0, LISTED);
+  const more = contents.length - listed.length;
 
   return (
     <motion.article
@@ -34,18 +35,21 @@ function CategoryTile({ category, headingLevel }: { category: Category; headingL
       onBlur={() => setLifted(false)}
       className={cn("flex flex-col", tone.surface)}
     >
-      <Link to={href} tabIndex={-1} aria-hidden>
-        <SlantedPhoto
-          image={category.image}
-          edge="right"
-          cut={CUT}
-          liftedCut={CUT_LIFTED}
-          lifted={lifted}
-          columnStagger={COLUMN_STAGGER}
-          sizes="(min-width: 1280px) 25vw, (min-width: 640px) 50vw, 100vw"
-          className="h-56"
-        />
-      </Link>
+      {category.image ? (
+        <Link to={href} tabIndex={-1} aria-hidden>
+          <SlantedPhoto
+            image={category.image}
+            edge="right"
+            cut={CUT}
+            liftedCut={CUT_LIFTED}
+            lifted={lifted}
+            columnStagger={COLUMN_STAGGER}
+            className="h-56"
+          />
+        </Link>
+      ) : (
+        <div aria-hidden className="h-56" />
+      )}
 
       <div className="flex flex-1 flex-col px-gutter pt-8 pb-10 xl:px-9">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -62,13 +66,13 @@ function CategoryTile({ category, headingLevel }: { category: Category; headingL
 
         {listed.length > 0 && (
           <ul className={cn("type-small mt-6 border-t font-medium", tone.rule)}>
-            {listed.map((product) => (
-              <li key={product.slug} className={cn("border-b", tone.rule)}>
+            {listed.map((item) => (
+              <li key={item.path} className={cn("border-b", tone.rule)}>
                 <Link
-                  to={`${href}/${product.slug}`}
+                  to={`/products/${item.path}`}
                   className="block py-2.5 hover:underline hover:underline-offset-4"
                 >
-                  {product.title}
+                  {item.title}
                 </Link>
               </li>
             ))}
@@ -91,7 +95,7 @@ function CategoryTile({ category, headingLevel }: { category: Category; headingL
   );
 }
 
-type CategoryTilesProps = { categories: Category[]; headingLevel?: "h2" | "h3" };
+type CategoryTilesProps = { categories: CategorySummary[]; headingLevel?: "h2" | "h3" };
 
 // Four to a row on wide screens; more categories wrap onto new rows.
 function CategoryTiles({ categories, headingLevel = "h3" }: CategoryTilesProps) {
