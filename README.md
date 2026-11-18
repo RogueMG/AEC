@@ -4,6 +4,10 @@ Catalogue site for Asiatic Engineering Co., Chennai. React + Vite + Tailwind v4 
 with Pages Functions, a D1 database and R2 image storage. (The older version on `main` is still
 served by GitHub Pages at https://roguemg.github.io/AEC/ until the Cloudflare site goes live.)
 
+**Guides:** [docs/ADMIN.md](docs/ADMIN.md) for editing the site (plain language), and
+[docs/API.md](docs/API.md) for the technical reference: endpoints, tables, settings, deploying,
+the custom domain and Cloudflare's free-plan limits.
+
 ## Pages
 
 | Path | Page |
