@@ -3,12 +3,11 @@ name = "asiatic-engineering"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-11-01"
 
-# Catalogue and enquiries. database_id is filled in when the remote database is created;
-# local development (wrangler --local) works with the placeholder.
+# Catalogue and enquiries (remote database created 2026-11-18, region APAC).
 [[d1_databases]]
 binding = "DB"
 database_name = "aec-db"
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "08ac7b2b-13b8-4812-ad7f-7730e39ff9ef"
 migrations_dir = "migrations"
 
 # Images uploaded through the admin.

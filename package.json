@@ -12,6 +12,8 @@
     "dev:cf": "npm run build:local && wrangler pages dev",
     "db:migrate:local": "wrangler d1 migrations apply aec-db --local",
     "db:seed:local": "node scripts/seed-sql.ts && wrangler d1 execute aec-db --local --file=seed/seed.sql",
+    "db:migrate:remote": "wrangler d1 migrations apply aec-db --remote",
+    "db:seed:remote": "node scripts/seed-sql.ts && wrangler d1 execute aec-db --remote --file=seed/seed.sql",
     "dev:api": "wrangler pages dev --port 8788 --ip 127.0.0.1",
     "dev:full": "npm run build:local && concurrently -k -n api,site -c blue,green \"npm:dev:api\" \"vite\"",
     "test:auth": "node scripts/test-auth.ts",
