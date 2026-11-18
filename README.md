@@ -79,8 +79,8 @@ being viewed, and location cards whose Google map only loads when the visitor cl
 
 | Setting | Where | Value |
 | --- | --- | --- |
-| `VITE_TURNSTILE_SITE_KEY` | Build-time variable (public). Locally: `.env.development.local` and `.env.localtest.local` (see `.env.example`). Production: a **build** environment variable on the Cloudflare Pages project | The widget's site key |
-| `TURNSTILE_SECRET` | Server secret. Locally: `.dev.vars`. Production: a Pages **secret** | The widget's secret key |
+| `VITE_TURNSTILE_SITE_KEY` | Build-time variable (public). Locally: `.env.development.local` and `.env.localtest.local` (see `.env.example`). Production: the committed `.env.production` (the key is public) | The widget's site key |
+| `TURNSTILE_SECRET` | Server secret. Locally: `.dev.vars`. On Cloudflare: a Pages **secret** in both Production and Preview (`npx wrangler pages secret put TURNSTILE_SECRET --project-name asiatic-engineering [--env preview]`) | The widget's secret key |
 | `ENQUIRY_SALT` | Pages secret (optional locally) | Any long random string, for hashing visitor IPs |
 
 Locally both keys use Cloudflare's test values that always pass. **Set the site key and the secret
