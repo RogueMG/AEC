@@ -10,6 +10,13 @@ database_name = "aec-db"
 database_id = "08ac7b2b-13b8-4812-ad7f-7730e39ff9ef"
 migrations_dir = "migrations"
 
+# Cloudflare Access for /admin and /api/admin (Zero Trust team "floral-recipe-5149", application
+# "AEC admin"). Not secrets: both are visible in every sign-in token. server/auth.ts checks tokens
+# against them, as a second lock behind Access itself.
+[vars]
+ACCESS_TEAM_DOMAIN = "floral-recipe-5149.cloudflareaccess.com"
+ACCESS_AUD = "7dffd41ba35f277e7643f083f6734fba8812e03c59f5d7b38f3938f5fc0454f7"
+
 # Images uploaded through the admin.
 [[r2_buckets]]
 binding = "MEDIA"
