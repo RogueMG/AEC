@@ -78,8 +78,12 @@ try {
     assert.ok(shop.telephone && shop.name && shop.parentOrganization["@id"]);
   }
   assert.deepEqual(shops.map((s) => s.address.postalCode).sort(), ["600001", "602105"]);
+  const org = ofType(home, "Organization")[0];
+  assert.equal(org.address.postalCode, "600001", "company address is the head office");
+  assert.equal(org.address.addressCountry, "IN");
+  assert.ok(org.image?.startsWith("http"), "company image is an absolute URL");
   ok("title, description, canonical, Open Graph, Twitter");
-  ok("JSON-LD: Organization, WebSite, LocalBusiness ×2 with full addresses");
+  ok("JSON-LD: Organization (with head-office address and image), WebSite, LocalBusiness ×2 with full addresses");
   assert.ok(tree.every((c) => home.summary.includes(`href="/products/${c.path}"`)));
   assert.ok(home.summary.includes("tel:+919840047672"));
   ok("summary links every top-level category and the phone number");

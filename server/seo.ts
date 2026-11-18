@@ -78,6 +78,18 @@ const summaryTrail = (trail: PathLink[]) =>
 
 const ORG_ID = "#organization";
 
+const postalAddress = (location: (typeof locations)[number]) => ({
+  "@type": "PostalAddress",
+  streetAddress: location.postal.street,
+  addressLocality: location.postal.locality,
+  addressRegion: location.postal.region,
+  postalCode: location.postal.postalCode,
+  addressCountry: "IN",
+});
+
+// The registered address is the head office.
+const headOffice = locations.find((l) => l.id === "head-office") ?? locations[0];
+
 function organization(base: string) {
   return {
     "@type": "Organization",
@@ -86,6 +98,8 @@ function organization(base: string) {
     alternateName: company.shortName,
     url: `${base}/`,
     logo: `${base}/images/logo-mark.png`,
+    image: `${base}${DEFAULT_IMAGE.src}`,
+    address: postalAddress(headOffice),
     foundingDate: String(company.established),
     email: contact.email.label,
     telephone: "+91-98400-47672",
@@ -111,14 +125,7 @@ function localBusinesses(base: string) {
     // The main mobile line: which location the landline belongs to isn't confirmed yet.
     telephone: "+91-98400-47672",
     email: contact.email.label,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: location.postal.street,
-      addressLocality: location.postal.locality,
-      addressRegion: location.postal.region,
-      postalCode: location.postal.postalCode,
-      addressCountry: "IN",
-    },
+    address: postalAddress(location),
     hasMap: location.mapsHref,
     parentOrganization: { "@id": `${base}/${ORG_ID}` },
   }));
